@@ -11,6 +11,6 @@ class TotalNetRecent extends Model
 
     public function heatRecentHourly()
     {
-    	return $this->hasMany('App/Entities/TotalNetRecentHourly');
+    	return $this->hasMany('App\Entities\TotalNetRecentHourly');
     }
 }

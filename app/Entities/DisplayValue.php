@@ -18,4 +18,5 @@ class DisplayValue
 	const PIE    				= 5;
 	const DOUGHNUT    			= 6;
 	const BUBBLE    			= 7;
+	const TABLE 				= 8;
 }

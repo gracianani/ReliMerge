@@ -6,13 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
-    function blockable() {
+    public $timestamps = false;
+
+    public $append = ['block_array'];
+
+    public function blockable() {
     	return $this->morphTo();
     }
 
     public function blockUnits()
     {
-        return $this->belongsToMany('App\BlockUnit');
+        return $this->belongsToMany('App\Entities\BlockUnit');
+    }
+
+    public function setBlockTypeAttribute($value)
+    {
+
     }
 
     public function getBlockValue($model)
@@ -21,15 +30,14 @@ class Block extends Model
 
         foreach ($this->blockUnits as $block_unit) 
         {
-            $content_array = 
-                array_push( 
-                    $content_array,
-                    array(
-                        "unit" => $block_unit->unit,
-                        "title" => $block_unit->title,
-                        "value" => $model->{$block_unit->property_name} 
-                    )
-                ); 
+            array_push( 
+                $content_array,
+                array(
+                    "unit" => $block_unit->unit,
+                    "title" => $block_unit->title,
+                    "value" => $model->{$block_unit->property_name} 
+                )
+            ); 
         }
 
         return $content_array;
@@ -46,15 +54,18 @@ class Block extends Model
 
         foreach ($this->blockUnits as $block_unit) 
         {
-            $content_array = 
-                array_push( 
-                    $content_array,
-                    array(
-                        "unit" => $block_unit->unit,
-                        "title" => $block_unit->title,
-                        "data" => $filtered->lists($block_unit->property_name) 
-                    )
-                ); 
+            $multiplied = $filtered->map(function ($item, $key) {
+                return $item->block_unit->property_name;
+            });
+
+            array_push( 
+                $content_array,
+                array(
+                    "unit" => $block_unit->unit,
+                    "title" => $block_unit->title,
+                    "data" => $multiplied
+                )
+            ); 
         }
 
         return $content_array;
@@ -104,7 +115,12 @@ class Block extends Model
     		case DisplayValue::BUBBLE;
     			$display = $display . '_bubble';
     			break;
+            case DisplayValue::TABLE;
+                $display = $display . '_table';
+                break;
     	}
+
+        return $display;
     }
 
     public function getBlockArrayAttribute()

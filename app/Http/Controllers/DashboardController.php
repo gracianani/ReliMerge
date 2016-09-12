@@ -10,11 +10,17 @@ class DashboardController extends Controller
 {
     public function show()
     {
-    	$blocks = Blocks::all();
+    	$blocks = Block::all();
+
+    	$multiplied = $blocks->map(function ($item, $key) {
+		    return $item->block_array;
+		});
+
     	return response()->json(
-			$blocks->lists('block_array')
+			array(
+				"blocks" => $multiplied
+			)
     	);
     }
 }
-
 

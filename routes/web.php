@@ -22,10 +22,5 @@ Route::get('greeting', function () {
 
 Route::get('heatsource/index', 'HeatsourceController@showBasic');
 
-Route::group(['prefix' => 'v1'], function () {
-    Route::get('users', function ()    {
-        // Matches The "/admin/users" URL
-    });
-    Route::post('user/{id}', 'V1/DashboardController@showUserController@show');
-});
+Route::get('blocks', 'DashboardController@show');
 

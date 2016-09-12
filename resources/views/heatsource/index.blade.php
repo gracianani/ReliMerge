@@ -4,8 +4,6 @@
     </head>
     <body>
         @section('sidebar')
-            {{ implode(',', $heatsource->getAllColumnsNames() )}}
-            <br/>
             {{ $heatsource->heatsource_name }}
         @show
 

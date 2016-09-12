@@ -66,8 +66,7 @@ return array(
 	 *	)
 	 */
 	'menu' => array(
-		'dashboard',
-		'heatsources'
+		'Dashboard' => array('dashboard', 'heatRecentBlock') 
 	),
 
 	/**
