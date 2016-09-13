@@ -9,8 +9,10 @@ class TotalNetRecent extends Model
 {
     public $table = 'TotalNetRecent';
 
-    public function heatRecentHourly()
+    protected $primaryKey = 'ItemID';
+
+    public function totalNetRecentHourly()
     {
-    	return $this->hasMany('App\Entities\TotalNetRecentHourly');
+    	return $this->hasMany('App\Entities\TotalNetRecentHourly', 'total_net_recent_id', 'ItemID');
     }
 }

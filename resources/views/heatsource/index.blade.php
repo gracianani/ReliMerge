@@ -1,14 +1,16 @@
-<html>
-    <head>
-        <title>App Name - @yield('title')</title>
-    </head>
-    <body>
-        @section('sidebar')
-            {{ $heatsource->heatsource_name }}
-        @show
+@extends('layouts.app')
 
-        <div class="container">
-            @yield('content')
-        </div>
-    </body>
-</html>
+@section('content')
+
+<!-- let people make clients -->
+<passport-clients></passport-clients>
+
+<!-- list of clients people have authorized to access our account -->
+<passport-authorized-clients></passport-authorized-clients>
+
+<!-- make it simple to generate a token right in the UI to play with -->
+<passport-personal-access-tokens></passport-personal-access-tokens>
+
+{{ $heatsource->heatsource_name }}
+
+@endsection

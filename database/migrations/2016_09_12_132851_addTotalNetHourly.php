@@ -16,7 +16,7 @@ class AddTotalNetHourly extends Migration
         Schema::create('total_net_hourly', function($table)
         {
             $table->increments('id');
-            $table->float('heat');
+            $table->float('heat_actual');
             $table->integer('total_net_recent_id')->unsigned();
             $table->foreign('total_net_recent_id')->references('ItemID')->on('TotalNetRecent');
             $table->timestamp('created_at');

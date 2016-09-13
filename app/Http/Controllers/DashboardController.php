@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function show()
     {
-    	$blocks = Block::all();
+    	$blocks = Block::where('module', 'dashboard')->get();
 
     	$multiplied = $blocks->map(function ($item, $key) {
 		    return $item->block_array;

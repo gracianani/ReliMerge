@@ -16,23 +16,28 @@ class Block extends Model
 
     public function blockUnits()
     {
-        return $this->belongsToMany('App\Entities\BlockUnit');
+        return $this->belongsToMany('App\Entities\BlockUnit')->withPivot('is_sortable', 'is_filterable', 'filter_type', 'filter_min', 'filter_max');
+    }
+    public function headerBlockUnits()
+    {
+        return $this->belongsToMany('App\Entities\BlockUnit')->wherePivot('type_id', BlockUnitType::HEADER);
     }
 
-    public function setBlockTypeAttribute($value)
+    public function contentBlockUnits()
     {
-
+        return $this->belongsToMany('App\Entities\BlockUnit')->wherePivot('type_id',  BlockUnitType::CONTENT);
     }
 
     public function getBlockValue($model)
     {
         $content_array = [];
 
-        foreach ($this->blockUnits as $block_unit) 
+        foreach ($this->headerBlockUnits as $block_unit) 
         {
             array_push( 
                 $content_array,
                 array(
+                    "type" => $block_unit->property_name,
                     "unit" => $block_unit->unit,
                     "title" => $block_unit->title,
                     "value" => $model->{$block_unit->property_name} 
@@ -43,24 +48,34 @@ class Block extends Model
         return $content_array;
     }
 
-    public function getBlockCollectionValue($models, $from, $to)
+    public function getBlockCollectionValue($models, $from = null, $to = null)
     {
         $content_array = [];
 
-        $filtered = $models->filter( function($value, $key) use($from, $to) {
-            return $value->last_updated_at >= $from && 
-                $value->last_updated_at < $to;
-        });
-
-        foreach ($this->blockUnits as $block_unit) 
+        if(is_null($from) || is_null($to))
         {
-            $multiplied = $filtered->map(function ($item, $key) {
-                return $item->block_unit->property_name;
+            $filtered = $models;
+        }
+        else {
+            $filtered = $models->filter( function($value, $key) use($from, $to) {
+                return $value->created_at >= $from && 
+                    $value->created_at < $to;
+            });
+        }
+        
+        foreach ($this->contentBlockUnits as $block_unit) 
+        {
+            $multiplied = $filtered->map(function ($item, $key) use($block_unit) {
+                return array(
+                    "timestamp" => $item->created_at->timestamp,
+                    "value" => $item->{$block_unit->property_name}
+                );
             });
 
             array_push( 
                 $content_array,
                 array(
+                    "type" => $block_unit->property_name,
                     "unit" => $block_unit->unit,
                     "title" => $block_unit->title,
                     "data" => $multiplied

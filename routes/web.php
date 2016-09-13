@@ -20,7 +20,5 @@ Route::get('greeting', function () {
     return view('welcome', ['name' => 'Samantha']);
 });
 
-Route::get('heatsource/index', 'HeatsourceController@showBasic');
-
-Route::get('blocks', 'DashboardController@show');
+Route::get('heatsource/index', 'HeatsourceController@show');
 

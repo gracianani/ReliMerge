@@ -75,13 +75,6 @@ return array(
 				'1',
 				'2'
 			)
-		),
-		'block_type' => array(
-			'title' => '模块类型',
-			"type" => 'enum',
-			'options' => array(
-				'heat'
-			)
 		)
 	),
 

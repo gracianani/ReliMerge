@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Frozennode\Administrator\AdministratorServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
 
     ],
 

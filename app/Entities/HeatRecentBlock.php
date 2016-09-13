@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Log;
 
 class HeatRecentBlock extends Model
 {
@@ -23,11 +24,6 @@ class HeatRecentBlock extends Model
 		return $this->belongsTo('App\Entities\Block');
 	}
 
-     public function blocks()
-    {
-        return $this->morphMany('App\Entities\Block', 'blockable');
-    }
-
     public function getBlockArrayAttribute()
     {
     	$values = [];
@@ -35,7 +31,8 @@ class HeatRecentBlock extends Model
     	{
     		$header = $this->block->getBlockValue($total_net_recent);
     		$content = $this->block->getBlockCollectionValue(
-    			$total_net_recent->heatRecentHourly, 
+    		    //TotalNetRecentHourly::where('total_net_recent_id',1)->get(),
+                $total_net_recent->totalNetRecentHourly, 
     			$this->from, 
     			$this->to
     		);
