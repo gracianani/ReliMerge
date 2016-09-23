@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use ReliHeatsources;
 
 class HeatSourceBlock extends Model
 {
@@ -15,10 +16,20 @@ class HeatSourceBlock extends Model
 		return $this->belongsTo('App\Entities\Block');
 	}
 
-	public function getHeatsourcesAttribute()
-	{
-		return HeatSource::all();
-	}
+    public function getHeatsourceRecentsAttribute()
+    {
+        return ReliHeatsources::fetchAllRealtime();
+    }
+
+    public function getHeatsourcesAttribute()
+    {
+        return ReliHeatsources::fetchAll();
+    }
+
+    public function getHeatsourceStats($from, $to)
+    {
+        return ReliHeatsources::fetchStatByDate($from, $to);
+    }
 
     public function getBlockArrayAttribute()
     {
@@ -33,5 +44,51 @@ class HeatSourceBlock extends Model
     		"header" => $header,
     		"content" => $multiplied
     	);
+    }
+
+    public function getHeatsourceRecentBlockArrayAttribute()
+    {
+
+        $multiplied = $this->heatsource_recents->map(function ($item, $key) {
+            return $item->block_array;
+        });
+
+        $header = $this->block->headerBlockUnits->map( function($item, $key) {
+            return $item->table_header_block_unit_array;
+        });
+        
+        return array(
+            "header" => $header,
+            "content" => $multiplied
+        );
+    }
+
+    public function getHeatsourceTotalStat( $group_names, $from, $to)
+    {
+
+    }
+
+    public function getHeatsourceStatPerDay( $heatsource_ids, $from, $to)
+    {
+        
+        $processed = ReliHeatsources::getAccumulateData( $heatsource_ids, $from, $to,
+                array("date",
+                    "temperature_perdict",
+                    "temperature_actual",
+                    "heatsource_id",
+                    "heatsource_name",
+                    "heat_daily_gj",
+                    "heat_per_square_actual",
+                    "area_in_use")
+            );
+
+        $header = $this->block->headerBlockUnits->map( function($item, $key) {
+            return $item->table_header_block_unit_array;
+        });
+        
+        return array(
+            "header" => $header,
+            "content" => $processed
+        );
     }
 }

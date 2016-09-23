@@ -20,3 +20,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/blocks', 'DashboardController@show');
 
 Route::post('/heatsources', 'HeatSourceController@showBasic');
+
+Route::post('/heatsource/recents', 'HeatsourceController@showRealtime');
+
+Route::post('/heatsource/stat', 'HeatsourceController@showStat');

@@ -22,3 +22,5 @@ Route::get('greeting', function () {
 
 Route::get('heatsource/index', 'HeatsourceController@show');
 
+Route::get('heatsource/recents', 'HeatsourceController@showRealtime');
+
