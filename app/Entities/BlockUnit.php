@@ -7,9 +7,21 @@ use DB;
 
 class BlockUnit extends Model
 {
+    public $timestamps = false;
+
 	public function blocks()
     {
         return $this->belongsToMany('App\Entities\Block');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\Entities\BlockUnit', 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo('App\Entities\BlockUnit', 'parent_id');
     }
 
     public function getFilterAttribute()
@@ -48,7 +60,10 @@ class BlockUnit extends Model
     		"is_editable"=> $this->is_editable,
     		"is_sortable" => $this->is_sortable,
     		"is_filterable" => $this->is_filterable,
-    		"filter" => $this->filter
+    		"filter" => $this->filter,
+            "sub_headers"=> $this->children->map( function($item, $key) {
+                return $item->table_header_block_unit_array;
+            })
     	);
     }
 }

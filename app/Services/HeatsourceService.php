@@ -74,37 +74,17 @@ class HeatsourceService
         		{
     				$processed_item[$parameter] = $heatsource->max($parameter);
         		}
-        		else {
-        			$s = [];
-        			$heatsource->each(function($item) use ($parameter, $s)
-        				{
-        					var_dump($item[$parameter]);
-        					var_dump($s);	
-        					array_push( $s, $item[$parameter] );
-        				}
-        			);
-        			var_dump($s);
-        			exit(1);
-        			array_add( $processed_item["data"] , $parameter, $s);
-        		}
         	}
-        	/*
-            $processed_item = array(
-                "date" => $key,
-                "temperature_perdict" => $heatsource->max('temperature_perdict'),
-                "temperature_actual" => $heatsource->max('temperature_actual')
-            );
-            $processed_item["data"]=[];
-            foreach ($heatsource as $heatsource_by_item) {
-                array_push( $processed_item["data"], 
-                    array( "id" => $heatsource_by_item["heatsource_id"],
-                        "heatsource_name" => $heatsource_by_item["heatsource_name"],
-                        "heat_daily_gj" => $heatsource_by_item["heat_daily_gj"],
-                        "heat_per_square_actual" => $heatsource_by_item["heat_per_square_actual"],
-                        "area_in_use"=> $heatsource_by_item["area_in_use"],
-                    )
-                );
-            }*/
+        	$processed_item["data"]= $heatsource->map( function($item, $key) use($parameters) {
+				$result = [];
+				foreach ($parameters as $parameter) {
+	        		if(!$this->isAggregate($parameter))
+	        		{
+	        			$result[$parameter] = $item[$parameter];
+	        		}
+	        	}
+				return $result;
+			});
             array_push($processed, $processed_item);
         }
 

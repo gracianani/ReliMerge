@@ -1,4 +1,5 @@
 <?php
+
 use App\Entities\DisplayValue;
 
 return array(
