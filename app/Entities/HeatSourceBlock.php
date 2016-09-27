@@ -68,18 +68,22 @@ class HeatSourceBlock extends Model
 
     }
 
+    public function getTotalNetStatPerDay( $district_ids, $from, $to)
+    {
+        
+    }
+    
     public function getHeatsourceStatPerDay( $heatsource_ids, $from, $to)
     {
         
-        $processed = ReliHeatsources::getAccumulateData( $heatsource_ids, $from, $to,
+        $processed = ReliHeatsources::getAccumulateData( 
+                $heatsource_ids, $from, $to,
                 array("date",
                     "temperature_perdict",
                     "temperature_actual",
                     "heatsource_id",
                     "heatsource_name",
-                    "heat_daily_gj",
-                    "heat_per_square_actual",
-                    "area_in_use")
+                    "heat_daily_gj")
             );
 
         $header = $this->block->headerBlockUnits->map( function($item, $key) {

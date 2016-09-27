@@ -92,8 +92,6 @@ class HeatsourceAccumulate extends Model
             'date' => $this->date,
             'temperature_perdict' => $this->temperature->temperature_perdict,
             'temperature_actual' =>  $this->temperature->temperature_actual,
-            'heat_per_square_actual' => $this->heat_per_square_actual,
-            'area_in_use' => $this->area_in_use
         );
     }
 
