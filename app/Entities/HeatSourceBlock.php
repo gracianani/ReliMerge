@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use ReliHeatsources;
+use ReliTotalNet;
 
 class HeatSourceBlock extends Model
 {
@@ -70,12 +71,26 @@ class HeatSourceBlock extends Model
 
     public function getTotalNetStatPerDay( $district_ids, $from, $to)
     {
+        $processed = ReliTotalNet::getAccumulateData( 
+                $district_ids, $from, $to,
+                array("date",
+                    "temperature_perdict",
+                    "temperature_actual",
+                    "district_name")
+            );
+
+        $header = $this->block->headerBlockUnits->map( function($item, $key) {
+            return $item->table_header_block_unit_array;
+        });
         
+        return array(
+            "header" => $header,
+            "content" => $processed
+        );
     }
     
     public function getHeatsourceStatPerDay( $heatsource_ids, $from, $to)
     {
-        
         $processed = ReliHeatsources::getAccumulateData( 
                 $heatsource_ids, $from, $to,
                 array("date",

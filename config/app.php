@@ -227,5 +227,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'ReliHeatsources' => App\Facades\HeatsourceFacade::class,
+        'ReliTotalNet' => App\Facades\HeatsourceFacade::class,
     ],
 ];

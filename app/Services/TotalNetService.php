@@ -1,42 +1,13 @@
 <?php namespace App\Services;
 
-use App\Entities\HeatSource;
-use App\Entities\HeatSourceRecent;
-use App\Entities\HeatsourceAccumulate;
-use App\Entities\Block;
+use App\Entities\TotalNetRecent;
+use App\Entities\TotalNetHistory;
 
-class HeatsourceService
+class TotalNetService
 {
-	public function getHeatsourcesByGroupName( $group_name )
-	{
-		switch( $group_name ) {
-			case ConstDefine::GROUP_EAST:
-				return HeatSource::east();
-			case ConstDefine::GROUP_WEST:
-				return HeatSource::west();
-		}
-		return HeatSource::all();
-	}
-
-	public function fetchAll()
-	{
-		return HeatSource::all();
-	}
-
-	public function fetchAllRealtime()
-	{
-		return HeatsourceRecent::all();
-	}
-
 	public function fetchStatByDate($from, $to)
 	{
-		return HeatsourceAccumulate::where('date', '>', $from)
-            ->where('date', '<', $to)->get();
-	}
-
-	public function filterByHeatsourceId($heatsource_ids, $from, $to )
-	{
-		return HeatsourceAccumulate::whereIn('heatsource_id', $heatsource_ids)->where('date', '>', $from)
+		return TotalNetHistory::where('date', '>', $from)
             ->where('date', '<', $to)->get();
 	}
 
@@ -60,6 +31,7 @@ class HeatsourceService
             ->map(function($item, $key) {
                 return $item->block_array;
             });
+
         $heatsources = $heatsources->unique(function ($item) {
                 return $item['heatsource_id'].$item['date'];
             })->groupBy("date");
@@ -89,12 +61,5 @@ class HeatsourceService
         }
 
         return $processed;
-	}
-
-	public function getBlock( $block_name )
-	{
-		$block = Block::where('module', $block_name)->first();
-        $heatsource_block = $block->blockable;
-        return $heatsource_block;
 	}
 }
