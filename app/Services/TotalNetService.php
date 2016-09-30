@@ -5,10 +5,12 @@ use App\Entities\TotalNetHistory;
 
 class TotalNetService
 {
-	public function fetchStatByDate($from, $to)
+	public function fetchStatByDate($group_ids, $from, $to)
 	{
-		return TotalNetHistory::where('date', '>', $from)
-            ->where('date', '<', $to)->get();
+		return TotalNetHistory::whereIn('ItemID', $group_ids)
+			->where('date', '>=', $from)
+            ->where('date', '<=', $to)
+            ->get();
 	}
 
 	private function isAggregate($parameter)
@@ -24,30 +26,30 @@ class TotalNetService
 		}
 	}
 
-	public function getAccumulateData($heatsource_ids, $from, $to, $parameters)
+	public function getAccumulateData($group_ids, $from, $to, $parameters)
 	{
-		$heatsources = $this->filterByHeatsourceId(
-            $heatsource_ids,$from, $to)
+		$totalNets = $this->fetchStatByDate(
+            $group_ids,$from, $to)
             ->map(function($item, $key) {
                 return $item->block_array;
             });
 
-        $heatsources = $heatsources->unique(function ($item) {
-                return $item['heatsource_id'].$item['date'];
+        $totalNets = $totalNets->unique(function ($item) {
+                return $item['id'].$item['date'];
             })->groupBy("date");
 
         $processed = [];
 
-        foreach ($heatsources as $key=> $heatsource) {
+        foreach ($totalNets as $key=> $totalNet) {
         	$processed_item = [];
             $processed_item["data"]=[];
         	foreach ($parameters as $parameter) {
         		if($this->isAggregate($parameter))
         		{
-    				$processed_item[$parameter] = $heatsource->max($parameter);
+    				$processed_item[$parameter] = $totalNet->max($parameter);
         		}
         	}
-        	$processed_item["data"]= $heatsource->map( function($item, $key) use($parameters) {
+        	$processed_item["data"]= $totalNet->map( function($item, $key) use($parameters) {
 				$result = [];
 				foreach ($parameters as $parameter) {
 	        		if(!$this->isAggregate($parameter))

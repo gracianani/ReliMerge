@@ -28,16 +28,39 @@ class HeatsourceService
 		return HeatsourceRecent::all();
 	}
 
+	public function fetchRealtimeByParameter($id, $parameter)
+	{
+		return HeatsourceRecent::find($id)->select($parameter);
+	}
+
 	public function fetchStatByDate($from, $to)
 	{
-		return HeatsourceAccumulate::where('date', '>', $from)
-            ->where('date', '<', $to)->get();
+		return HeatsourceAccumulate::
+			where('date', '>=', $from)
+            ->where('date', '<=', $to)->get();
+	}
+
+	public function update( $id, $data )
+	{
+		$heatSource = HeatSource::find($id);
+		$heatSource->update( $data );
+		return true;
+	}
+
+	public function batchUpdate( $data)
+	{
+		foreach ($data as $data_item) {
+			$heatSource = HeatSource::find($data_item['id']);
+			$heatSource->update( $data_item );
+		}
+		return true;
 	}
 
 	public function filterByHeatsourceId($heatsource_ids, $from, $to )
 	{
-		return HeatsourceAccumulate::whereIn('heatsource_id', $heatsource_ids)->where('date', '>', $from)
-            ->where('date', '<', $to)->get();
+		return HeatsourceAccumulate::whereIn('heatsource_id', $heatsource_ids)
+			->where('date', '>=', $from)
+            ->where('date', '<=', $to)->get();
 	}
 
 	private function isAggregate($parameter)
@@ -89,12 +112,5 @@ class HeatsourceService
         }
 
         return $processed;
-	}
-
-	public function getBlock( $block_name )
-	{
-		$block = Block::where('module', $block_name)->first();
-        $heatsource_block = $block->blockable;
-        return $heatsource_block;
 	}
 }

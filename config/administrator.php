@@ -66,7 +66,13 @@ return array(
 	 *	)
 	 */
 	'menu' => array(
-		'Dashboard' => array('dashboard', 'heatRecentBlock','blockunits') 
+		'Dashboard' => array(
+			'dashboard', 
+			'heatRecentBlock',
+			'blockunits',
+			'heatSourceBlock',
+			'stationBlock'
+		) 
 	),
 
 	/**

@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\HeatsourceService;
 use App\Services\TotalNetService;
+use App\Services\StationService;
+use App\Services\DashboardService;
 
 class ReliServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,14 @@ class ReliServiceProvider extends ServiceProvider
 
         $this->app->bind('totalNetService', function ($app) {
             return new TotalNetService();
+        });
+
+        $this->app->bind('stationService', function ($app) {
+            return new StationService();
+        });
+
+        $this->app->bind('dashboardService', function ($app) {
+            return new DashboardService();
         });
     }
 }

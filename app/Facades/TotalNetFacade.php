@@ -2,11 +2,11 @@
 
 use Illuminate\Support\Facades\Facade;
 
-class HeatsourceFacade extends Facade 
+
+class TotalNetFacade extends Facade 
 {
 	protected static function getFacadeAccessor() 
 	{
-		return 'heatsourceService';
+		return 'totalNetService';
 	}
 }
-

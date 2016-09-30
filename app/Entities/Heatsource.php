@@ -11,6 +11,10 @@ class Heatsource extends Model
 
     protected $primaryKey = 'ItemID';
 
+    protected $fillable = ['admin','name'];
+
+    public $timestamps = false;
+
     public function company()
     {
     	return $this->belongsTo('App\Entities\Company');
@@ -19,6 +23,11 @@ class Heatsource extends Model
     public function sublines()
     {
     	return $this->hasMany('App\Entities\HeatSourceRecents');
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->{'热源名称'} = $value;
     }
 
     public function getDistrictAttribute()

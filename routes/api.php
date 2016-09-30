@@ -19,8 +19,18 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/blocks', 'DashboardController@show');
 
-Route::post('/heatsources', 'HeatSourceController@showBasic');
+Route::post('/heatsource', 'HeatSourceController@showBasic');
 
 Route::post('/heatsource/recents', 'HeatsourceController@showRealtime');
 
-Route::post('/heatsource/stat', 'HeatsourceController@showStat');
+Route::post('/heatsource/stat', 'HeatsourceController@showStatByHeatSource');
+
+Route::post('/heatsource/{id}/update', 'HeatsourceController@update');
+
+Route::post('/heatsource/batchupdate', 'HeatsourceController@batchUpdate');
+
+Route::post('/totalnet/stat', 'TotalNetController@showStatByTotalNet');
+
+Route::post('/heatsource/recents/{id}/{parameter}', 'HeatsourceController@showRealtimeByParameter');
+
+Route::post('/station', 'StationController@showBasic');

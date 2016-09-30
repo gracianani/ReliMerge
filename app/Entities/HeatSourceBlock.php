@@ -76,7 +76,10 @@ class HeatSourceBlock extends Model
                 array("date",
                     "temperature_perdict",
                     "temperature_actual",
-                    "district_name")
+                    "district_name",
+                    "area",
+                    'heat_per_square',
+                    'heat_per_square_ref')
             );
 
         $header = $this->block->headerBlockUnits->map( function($item, $key) {

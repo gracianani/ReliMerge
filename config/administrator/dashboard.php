@@ -31,7 +31,9 @@ return array(
 		),
 		'display_graph_id' => array(
 			'title' => '展示方式'
-		)
+		),
+		'title',
+		'module',
 	),
 
 	/**
@@ -76,6 +78,23 @@ return array(
 				'1',
 				'2'
 			)
+		),
+		'blockable_id' => array(
+			'title' => 'id',
+			'type' => 'number'
+		),
+		'blockable_type' => array(
+			'title' => '类型',
+			'type' => 'enum',
+			'options' => array(
+				'App\Entities\HeatSourceBlock', 
+				'App\Entities\HeatRecentBlock',
+				'App\Entities\StationBlock'
+			)
+		),
+		'module' => array(
+			'title' => '模块名称',
+			'type' => 'text'
 		)
 	),
 
