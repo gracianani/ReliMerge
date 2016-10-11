@@ -18,4 +18,9 @@ class StationController extends Controller
             $block->block_array
         );
     }
+
+    public function showRealtime()
+    {
+    	
+    }
 }
