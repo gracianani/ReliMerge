@@ -21,6 +21,10 @@ class StationController extends Controller
 
     public function showRealtime()
     {
-    	
+    	$block = ReliDashboard::getBlock('station_recent');
+        return response()->json(
+            $block->station_recent_block_array
+        );
     }
+
 }

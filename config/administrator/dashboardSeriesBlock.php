@@ -3,11 +3,11 @@ use App\Entities\DisplayValue;
 
 return array(
 
-	'title' => '供热实时表设置',
+	'title' => '实时模块设置',
 
-	'single' => '供热实时表',
+	'single' => '实时模块',
 
-	'model' => 'App\Entities\HeatRecentBlock',
+	'model' => 'App\Entities\DashboardSeriesBlock',
 
 	/**
 	 * The display columns
@@ -28,6 +28,12 @@ return array(
 		),
 		'role_id' => array(
 			'title' => '角色'
+		),
+		'modelable_id' => array(
+			'title' => '实例ID'
+		),
+		'modelable_type' => array(
+			'title' => '实例Type'
 		)
 	),
 
@@ -48,10 +54,17 @@ return array(
 			'type' => 'bool'
 		),
 		'interval' => array(
-			'title' => '间隔'
+			'title' => '间隔',
+			'type' => 'time'
 		),
 		'role_id' => array(
 			'title' => '角色'
+		),
+		'modelable_id' => array(
+			'title' => '实例ID'
+		),
+		'modelable_type' => array(
+			'title' => '实例Type'
 		)
 	),
 

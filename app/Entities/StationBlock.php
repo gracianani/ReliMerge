@@ -22,6 +22,11 @@ class StationBlock extends Model
 		return ReliStations::fetchAll();
 	}
 
+	public function getStationRecentsAttribute()
+	{
+		return ReliStations::fetAllRealtime();
+	}
+
 	public function getBlockArrayAttribute()
     {
     	$multiplied = $this->stations->map(function ($item, $key) {
@@ -31,9 +36,27 @@ class StationBlock extends Model
     	$header = $this->block->headerBlockUnits->map( function($item, $key) {
     		return $item->table_header_block_unit_array;
     	});
+        
     	return array(
     		"header" => $header,
     		"content" => $multiplied
     	);
+    }
+
+    public function getStationRecentBlockArrayAttribute()
+    {
+
+        $multiplied = $this->stations->map(function ($item, $key) {
+            return $item->station_recent_array;
+        });
+
+        $header = $this->block->headerBlockUnits->map( function($item, $key) {
+            return $item->table_header_block_unit_array;
+        });
+        
+        return array(
+            "header" => $header,
+            "content" => $multiplied
+        );
     }
 }

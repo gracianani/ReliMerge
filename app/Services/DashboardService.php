@@ -7,7 +7,13 @@ class DashboardService
 	public function getBlock( $block_name )
 	{
 		$block = Block::where('module', $block_name)->first();
-        $heatsource_block = $block->blockable;
-        return $heatsource_block;
+        $blockable = $block->blockable;
+        return $blockable;
+	}
+
+	public function getBlocks( $block_name )
+	{
+		$blocks = Block::where('module', $block_name)->orderBy('sequence')->get();
+		return $blocks;
 	}
 }

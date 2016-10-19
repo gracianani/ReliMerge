@@ -64,4 +64,21 @@ class TotalNetService
 
         return $processed;
 	}
+
+
+	public function getAttributeData( $itemId, $from, $to, $parameters)
+	{
+		$total_net_histories = $this->fetchStatByDate([$itemId], $from, $to);
+
+		$multiplied = $total_net_histories->map(function ($item, $key) use ($parameters) 
+		{
+		    $result = [];
+		    foreach ($parameters as $key => $parameter) {
+		    	$result[$key] = $item->{$parameter};
+		    }
+		    return $result;
+		});
+
+		return $multiplied;
+	}
 }

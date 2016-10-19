@@ -34,3 +34,7 @@ Route::post('/totalnet/stat', 'TotalNetController@showStatByTotalNet');
 Route::post('/heatsource/recents/{id}/{parameter}', 'HeatsourceController@showRealtimeByParameter');
 
 Route::post('/station', 'StationController@showBasic');
+
+Route::post('/station/recents', 'StationController@showRealtime');
+
+Route::post('/station/{id}/blocks', 'DashboardController@showStationInfo');

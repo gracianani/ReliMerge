@@ -70,6 +70,5 @@ class HeatsourceController extends Controller
             )
         );
     }
-
    
 } 

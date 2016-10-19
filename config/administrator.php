@@ -68,10 +68,12 @@ return array(
 	'menu' => array(
 		'Dashboard' => array(
 			'dashboard', 
-			'heatRecentBlock',
+			'dashboardSeriesBlock',
+			'dashboardValueBlock',
+			'dashboardTableBlock',
 			'blockunits',
 			'heatSourceBlock',
-			'stationBlock'
+			'stationBlock',
 		) 
 	),
 

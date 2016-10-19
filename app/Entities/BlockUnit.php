@@ -66,10 +66,23 @@ class BlockUnit extends Model
             })
     	);
     }
-}
 
-class BlockUnitType 
-{
-	const HEADER = 1;
-	const CONTENT = 2;
+    public function getStaticHeaderBlockUnitArrayAttribute()
+    {
+        return array(
+            "title" => $this->title,
+            "unit" => $this->unit,
+            "value"=>$this->value,
+            "property_name" => $this->property_name
+        );
+    }
+    public function getTableContentBlockUnitArrayAttribute()
+    {
+        return array(
+            "title" => $this->title,
+            "unit" => $this->unit
+        );
+    }
+
+    
 }

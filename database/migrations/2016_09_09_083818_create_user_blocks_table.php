@@ -28,9 +28,9 @@ class CreateUserBlocksTable extends Migration
             });
         }
 
-        if (!Schema::hasTable('heat_recent_blocks')) 
+        if (!Schema::hasTable('dashboard_series_blocks')) 
         {
-            Schema::create('heat_recent_blocks', function($table)
+            Schema::create('dashboard_series_blocks', function($table)
             {
                 $table->increments('id');
                 $table->integer('block_id')->unsigned();
@@ -70,9 +70,9 @@ class CreateUserBlocksTable extends Migration
             });
         }
         
-        if(!Schema::hasTable('heat_index_blocks'))
+        if(!Schema::hasTable('dashboard_value_blocks'))
         {
-            Schema::create('heat_index_blocks', function($table)
+            Schema::create('dashboard_value_blocks', function($table)
             {
                 $table->increments('id');
                 $table->integer('block_id')->unsigned();

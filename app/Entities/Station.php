@@ -21,6 +21,11 @@ class Station extends Model
     	return $this->hasMany('App\Entities\StationArea', '热力站ID');
     }
 
+    public function stationRecents()
+    {
+        return $this->hasMany('App\Entities\StationRecent');
+    }
+
     public function getStationArrayAttribute()
     {
     	$area = $this->stationAreas->map(function($item, $key)
@@ -49,6 +54,29 @@ class Station extends Model
     		"area_b" => $this->area_b,
     		'area' => $area
     	);
+    }
+
+    public function getStationRecentArrayAttribute($value='')
+    {
+        $multiplied = $this->stationRecents->map(function ($item, $key) {
+            return $item->block_array;
+        });
+        return array(
+            'id' => $this->ItemID,
+            'station_num' => $this->station_num,
+            'name' => $this->name,
+            "company" => $this->company,
+            "subcompany" => $this->subcompany,
+            "first_temperature_out" => $this->first_temperature_out,
+            "first_temperature_in" => $this->first_temperature_in,
+            "first_pressure_out" => $this->first_pressure_out,
+            "first_pressure_in" => $this->first_pressure_in,
+            "total_water_flow_inst" => $this->total_water_flow_inst,
+            "total_heat_inst" => $this->total_heat_inst,
+            "total_water_flow" => $this->total_water_flow,
+            "total_heat" => $this->total_heat,
+            "sublines" => $multiplied
+        );
     }
 
 

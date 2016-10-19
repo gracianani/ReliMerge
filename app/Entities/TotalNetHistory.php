@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use App\ConstDefine;
+use Carbon\Carbon;
 
 class TotalNetHistory extends Model
 {
@@ -29,17 +30,33 @@ class TotalNetHistory extends Model
 
     public function getTemperatureActualAttribute()
     {
-    	return $this->temperature->temperature_actual;
+        if($this->temperature) {
+            return $this->temperature->temperature_actual;
+        }
+    	return null;
     }
 
     public function getTemperaturePerdictAttribute()
     {
-    	return $this->temperature->temperature_perdict;
+        if($this->temperature) {
+    	   return $this->temperature->temperature_perdict;
+        }
+        return null;
     }
 
     public function getHeatPerSquareRefAttribute()
     {
     	return $this->heat_per_square * 17.4 / (18 - $this->temperature_perdict);
+    }
+
+    public function getTimestampAttribute()
+    {
+        return Carbon::createFromFormat("Y-m-d", $this->date)->timestamp;
+    }
+
+    public function getTitleAttribute()
+    {
+        return $this->district_name;
     }
 
 	public function getBlockArrayAttribute()

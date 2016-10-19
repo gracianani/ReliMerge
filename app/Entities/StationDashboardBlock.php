@@ -1,25 +1,39 @@
-<?php
+<?php 
 
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
-use Log;
+use ReliStations;
 
-class HeatRecentBlock extends Model
+class StationDashboardBlock extends Model
 {
+	protected $table = 'station_dashboard_blocks';
+
     public $timestamps = false;
+
+    private $station_id;
+
+    public function getStationIdAttribute()
+    {
+    	return $station_id;
+    }
+
+    public function setStationIdAttribute( $value )
+    {
+    	$station_id = $value;
+    }
+
+    public function getStationAttribute()
+    {
+    	return ReliStations::find($this->station_id);
+    }
 
     protected $dates = [
         'from',
         'to',
     ];
 
-	public function getTotalNetRecentsAttribute()
-	{
-		return TotalNetRecent::all();
-	}
-
-	public function block()
+    public function block()
 	{
 		return $this->belongsTo('App\Entities\Block');
 	}
@@ -31,7 +45,6 @@ class HeatRecentBlock extends Model
     	{
     		$header = $this->block->getBlockValue($total_net_recent);
     		$content = $this->block->getBlockCollectionValue(
-    		    //TotalNetRecentHourly::where('total_net_recent_id',1)->get(),
                 $total_net_recent->totalNetRecentHourly, 
     			$this->from, 
     			$this->to
@@ -46,4 +59,5 @@ class HeatRecentBlock extends Model
 
     	return $values;
     }
+
 }

@@ -16,7 +16,7 @@ class Block extends Model
 
     public function blockUnits()
     {
-        return $this->belongsToMany('App\Entities\BlockUnit')->withPivot('is_sortable', 'is_filterable', 'filter_type', 'filter_min', 'filter_max');
+        return $this->belongsToMany('App\Entities\BlockUnit');
     }
     public function headerBlockUnits()
     {
@@ -28,48 +28,80 @@ class Block extends Model
         return $this->belongsToMany('App\Entities\BlockUnit')->wherePivot('type_id',  BlockUnitType::CONTENT);
     }
 
-    public function getBlockValue($model)
+    public function getTableBlockValue($collection, $block_unit)
+    {
+        $result = array(
+            "title" => $block_unit->title,
+            "unit" => $block_unit->unit,
+            "data" => $collection->map( function ($value) use($block_unit)
+            {
+                return array($value->title => $value->{$block_unit->property_name});
+            })
+        );
+        return $result;
+    }
+
+    public function getBlockValue($model, $block_type=BlockUnitType::HEADER)
     {
         $content_array = [];
-
-        foreach ($this->headerBlockUnits as $block_unit) 
+        $block_units = [];
+        if($block_type == BlockUnitType::HEADER)
         {
+            $block_units = $this->headerBlockUnits;
+        }
+        else {
+            $block_units = $this->contentBlockUnits;
+        }
+        foreach ($block_units as $block_unit) 
+        {
+            $result = array(
+                "type" => $block_unit->property_name,
+                "unit" => $block_unit->unit,
+                "title" => $block_unit->title
+            );
+            if($block_type == BlockUnitType::HEADER)
+            {
+                $result["value"] = $model->{$block_unit->property_name};
+            }
+            else 
+            {
+                $result["data"] = array(
+                    "value" => $model->{$block_unit->property_name}
+                );
+            }
             array_push( 
                 $content_array,
-                array(
-                    "type" => $block_unit->property_name,
-                    "unit" => $block_unit->unit,
-                    "title" => $block_unit->title,
-                    "value" => $model->{$block_unit->property_name} 
-                )
+                $result
             ); 
         }
 
         return $content_array;
     }
 
-    public function getBlockCollectionValue($models, $from = null, $to = null)
+    public function getBlockValueByProperty($model, $properties=[])
+    {
+        $content_array = [];
+        foreach ($properties as $property) 
+        {
+            $content_array[$property] = $model->{$property};
+        }
+        return $content_array;
+    }
+
+    public function getBlockCollectionValue($collection, $properties = [])
     {
         $content_array = [];
 
-        if(is_null($from) || is_null($to))
-        {
-            $filtered = $models;
-        }
-        else {
-            $filtered = $models->filter( function($value, $key) use($from, $to) {
-                return $value->created_at >= $from && 
-                    $value->created_at < $to;
-            });
-        }
-        
         foreach ($this->contentBlockUnits as $block_unit) 
         {
-            $multiplied = $filtered->map(function ($item, $key) use($block_unit) {
-                return array(
-                    "timestamp" => $item->created_at->timestamp,
-                    "value" => $item->{$block_unit->property_name}
-                );
+            $multiplied = $collection->map(function ($item, $key) use($block_unit) {
+                $result = [];
+                if($item->has_timestamp)
+                {
+                    $result['timestamp'] = $item->timestamp;
+                }
+                $result['value'] = $item->{$block_unit->property_name};
+                return $result;
             });
 
             array_push( 
@@ -82,7 +114,6 @@ class Block extends Model
                 )
             ); 
         }
-
         return $content_array;
     }
 
@@ -147,5 +178,15 @@ class Block extends Model
     		"display" => $this->display,
     		"data" => $this->blockable->block_array
     	);
+    }
+
+    public function getPropertiesAttribute()
+    {
+        $header = $this->headerBlockUnits->map( function($item, $key) {
+            return $item->static_header_block_unit_array;
+        });
+
+        $properties = array_column($this->headerBlockUnits->toArray(), 'property_name');
+        return $properties;
     }
 }

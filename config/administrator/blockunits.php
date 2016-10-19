@@ -12,6 +12,7 @@ return array(
 	 * The display columns
 	 */
 	'columns' => array(
+		'id',
 		'title' => array(
 			'title' => '显示名称'
 		),
@@ -81,6 +82,10 @@ return array(
 		'title' => array(
 			'title' => '显示名称',
 		),
+		'property_name' => array(
+			'title' => '数据库列名',
+		),
 	),
+
 
 );

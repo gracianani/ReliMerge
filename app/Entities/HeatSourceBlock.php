@@ -72,15 +72,19 @@ class HeatSourceBlock extends Model
     public function getTotalNetStatPerDay( $district_ids, $from, $to)
     {
         $processed = ReliTotalNet::getAccumulateData( 
-                $district_ids, $from, $to,
-                array("date",
-                    "temperature_perdict",
-                    "temperature_actual",
-                    "district_name",
-                    "area",
-                    'heat_per_square',
-                    'heat_per_square_ref')
-            );
+            $district_ids, $from, $to,
+            array("date",
+                "temperature_perdict",
+                "temperature_actual",
+                "district_name",
+                "area",
+                'heat_per_square',
+                'heat_per_square_ref',
+                'heat_index_ref',
+                'heat_index_actual', 
+                'heat_ref',
+                'heat_actual')
+        );
 
         $header = $this->block->headerBlockUnits->map( function($item, $key) {
             return $item->table_header_block_unit_array;
