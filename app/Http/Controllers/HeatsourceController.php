@@ -8,9 +8,19 @@ use App\Http\Requests;
 use ReliHeatsources;
 use Exception;
 use ReliDashboard;
+use Validator;
 
 class HeatsourceController extends Controller
 {
+    private $validate_rules = [
+                'id' => 'required|numeric|exists:HeatSources,ItemID',
+                'name' => 'string',
+                'address' => 'string',
+                'year_of_built' => 'numeric',
+                'area' => 'numeric',
+                'admin' => 'string'
+            ];
+
     public function showBasic()
     {
         $block = ReliDashboard::getBlock('heatsource');
@@ -22,18 +32,48 @@ class HeatsourceController extends Controller
     public function update(Request $request, $id)
     {
         $data = json_decode( $request->input('data'), true);
+        $data = array_merge($data, ["id"=>$id]);
+        $validator = Validator::make(
+            $data , $this->validate_rules);
+
+        if ($validator->fails()) {
+            return response()->json(
+                array( 'error' => true,
+                'error_message' => $validator->errors())
+            );
+        }
         $result = ReliHeatsources::update($id, $data);
+
+        $heatsource = ReliHeatsources::fetch($id);
         return response()->json(
-            array( 'error' => !$result )
+            array( 'error' => !$result, 
+            "heatsource" => $heatsource->heat_source_array )
         );
     }
 
     public function batchUpdate(Request $request)
     {
         $data = json_decode( $request->input('data'), true);
+        foreach($data as $data_item)
+        {
+            $validator = Validator::make(
+                $data_item , $this->validate_rules);
+            if ($validator->fails()) {
+                return response()->json(
+                    array( 'error' => true,
+                    'error_message' => $validator->errors())
+                );
+            }
+        }
         $result = ReliHeatsources::batchUpdate($data);
+        $ids = array_column($data, 'id');
         return response()->json(
-            array( 'error' => !$result )
+            array( 'error' => !$result,
+                "heat_sources" => ReliHeatsources::fetch($ids)->map(function($item)
+                {
+                    return $item->heat_source_array;
+                })
+            )
         );
     }
 
@@ -47,10 +87,12 @@ class HeatsourceController extends Controller
 
     public function showRealtimeByParameter( $id, $parameter)
     {
-        $data = ReliHeatsources::fetchRealtimeByParameter($id, $parameter);
+        $block = ReliDashboard::getBlock('heatsource_recent');
         return response()->json(
-            $data
+            $block->getByParameter($id, $parameter)
         );
+
+        
     }
 
     public function showStatByHeatSource(Request $request)

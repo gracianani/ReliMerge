@@ -38,11 +38,16 @@ class BlockUnit extends Model
 		    		"type" => $this->filter_type
 		    	);
     		case 'dropdown':
-    		$query =  DB::table($this->filter_table_name)->pluck($this->filter_column_name);
+                $query =  DB::table($this->filter_table_name)->pluck($this->filter_column_name);
     			return array(
 		    		"type" => $this->filter_type,
 		    		"available_items" => $query
 		    	);
+            case 'boolean';
+                return array(
+                    'type' => $this->filter_type,
+                    "available_items" => ["是", "否"]
+                );
     		default:
     			return null;
     	}
@@ -60,6 +65,7 @@ class BlockUnit extends Model
     		"is_editable"=> $this->is_editable,
     		"is_sortable" => $this->is_sortable,
     		"is_filterable" => $this->is_filterable,
+            "is_hoverable" => $this->is_hoverable,
     		"filter" => $this->filter,
             "sub_headers"=> $this->children->map( function($item, $key) {
                 return $item->table_header_block_unit_array;

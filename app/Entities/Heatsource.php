@@ -11,7 +11,13 @@ class Heatsource extends Model
 
     protected $primaryKey = 'ItemID';
 
-    protected $fillable = ['admin','name'];
+    protected $fillable = [ "heat_source_num", 'address','year_of_built', 
+        "area", "name", "admin", "phone", "type", "is_gas", "inner_or_outer", "district", 
+        "is_whole", "heat_capacity", "max_hourly_heat_capacity", "max_daily_heat_capacity",
+        "max_day_hourly_heat_capacity", "water_cycle", "max_water_cycle","additional_water",
+        "max_inst_additional_water", "max_daily_additional_water", "max_monthly_additional_water",
+        "daily_gas_usage", "hourly_gas_usage", "num_of_ovens", "oven_heat_capacity"
+    ];
 
     public $timestamps = false;
 
@@ -30,16 +36,10 @@ class Heatsource extends Model
         $this->{'热源名称'} = $value;
     }
 
-    public function getDistrictAttribute()
-    {
-    	switch ($this->district_id) {
-    		case 1:
-    			return '东部';
-    		
-    		default:
-    			return '西部';
-    	}
-    }
+    // public function getInnerOrOuterAttribute()
+    // {
+    //     if($this->{"inner_or_outer"} == true)
+    // }
 
     public function getHeatSourceArrayAttribute()
     {
@@ -54,11 +54,11 @@ class Heatsource extends Model
     		"phone" => $this->phone,
     		"type" => $this->type,
     		"is_gas" => $this->is_gas,
-    		"inner_or_outer" => $this->inner_or_outer,
+    		"inner_or_outer" => $this->inner_or_outer ,
     		"district" => $this->district,
     		"is_whole" => $this->is_whole,
     		"subline_id" => 1,
-    		"subline_name" => '1#',
+    		"subline_name" => $this->subline_name,
     		"heat_capacity" => $this->heat_capacity,
     		"max_hourly_heat_capacity" => $this->max_hourly_heat_capacity,
     		"max_daily_heat_capacity" => $this->max_daily_heat_capacity,

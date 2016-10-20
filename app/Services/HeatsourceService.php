@@ -4,6 +4,7 @@ use App\Entities\HeatSource;
 use App\Entities\HeatSourceRecent;
 use App\Entities\HeatsourceAccumulate;
 use App\Entities\Block;
+use Carbon\Carbon;
 
 class HeatsourceService
 {
@@ -18,6 +19,11 @@ class HeatsourceService
 		return HeatSource::all();
 	}
 
+	public function fetch($id)
+	{
+		return HeatSource::find($id);
+	}
+
 	public function fetchAll()
 	{
 		return HeatSource::all();
@@ -30,7 +36,8 @@ class HeatsourceService
 
 	public function fetchRealtimeByParameter($id, $parameter)
 	{
-		return HeatsourceRecent::find($id)->select($parameter);
+		return HeatsourceRecent::find($id)->getRealtimeParameters(
+			[$parameter], Carbon::now()->addHours(-1), Carbon::now());
 	}
 
 	public function fetchStatByDate($from, $to)

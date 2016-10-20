@@ -36,14 +36,15 @@ class HeatSourceBlock extends Model
     {
     	$multiplied = $this->heatsources->map(function ($item, $key) {
 		    return $item->heat_source_array;
-		});
+		});   
 
     	$header = $this->block->headerBlockUnits->map( function($item, $key) {
     		return $item->table_header_block_unit_array;
-    	});
+    	})->sortBy('sequence')->values();
+
     	return array(
     		"header" => $header,
-    		"content" => $multiplied
+    		"content" => $multiplied,
     	);
     }
 
@@ -56,7 +57,7 @@ class HeatSourceBlock extends Model
 
         $header = $this->block->headerBlockUnits->map( function($item, $key) {
             return $item->table_header_block_unit_array;
-        });
+        })->sortBy('sequence')->values();
         
         return array(
             "header" => $header,
@@ -116,5 +117,23 @@ class HeatSourceBlock extends Model
             "header" => $header,
             "content" => $processed
         );
+    }
+
+    public function getByParameter($id, $parameter)
+    {
+        $data = ReliHeatsources::fetchRealtimeByParameter($id, $parameter);
+        
+        $header = $this->block->headerBlockUnits
+            ->filter(function ($value, $key) use($parameter) {
+            return $value["property_name"] == $parameter;
+        })->map(function($item){
+            return $item->static_header_block_unit_array;
+        })->values();
+
+        return 
+            array(
+                "header" => $header,
+                "content" => $data
+            );
     }
 }
