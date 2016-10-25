@@ -41,5 +41,7 @@ Vue.http.interceptors.push((request, next) => {
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
-//     key: 'your-pusher-key'
+//     key: '01c876c1788a5776567a',
+//     cluster: 'ap1',
+//     encrypted: true
 // });

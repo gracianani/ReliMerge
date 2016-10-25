@@ -24,3 +24,7 @@ Route::get('heatsource/index', 'HeatsourceController@show');
 
 Route::get('heatsource/recents', 'HeatsourceController@showRealtime');
 
+Route::get('fire', 'DashboardController@fireQueue');
+
+Route::get('pusher', 'DashboardController@pusher');
+

@@ -8,6 +8,56 @@ use Carbon\Carbon;
 
 class HeatsourceService
 {
+	public function getValidationRules()
+	{
+		return $this->validate_rules;
+	}
+
+	public function getValidationMessages()
+	{
+		return $this->validation_messages;
+	}
+
+	private $validate_rules = [
+        'id' => 'required|numeric|exists:HeatSources,ItemID',
+        'heatsource_num' => 'string|max:20',
+        'name' => 'string|max:20',
+        'address' => 'string|max:100',
+        'year_of_built' => 'date_format:Y',
+        'area' => 'numeric|max:65535',
+        'admin' => 'string',
+        "phone" => 'digits_between:8,11', 
+        "type" => 'in:燃煤,燃气,燃油', 
+        "is_gas" => 'boolean', 
+        "inner_or_outer" => 'in:内部,外部', 
+        "district" => 'in:东部,西部,全网', 
+        "is_whole" => 'boolean', 
+        "heat_capacity" => 'numeric', 
+        "max_hourly_heat_capacity" => 'numeric', 
+        "max_daily_heat_capacity" => 'numeric',
+        "max_day_hourly_heat_capacity" => 'numeric', 
+        "water_cycle" => 'numeric', 
+        "max_water_cycle" => 'numeric',
+        "additional_water" => 'numeric',
+        "max_inst_additional_water" => 'numeric', 
+        "max_daily_additional_water" => 'numeric', 
+        "max_monthly_additional_water" => 'numeric',
+        "daily_gas_usage" => 'numeric', 
+        "hourly_gas_usage" =>'numeric', 
+        "num_of_ovens" => 'numeric', 
+        "oven_heat_capacity" => 'numeric'
+   	];
+
+   	private $validation_messages = [
+        'date_format' => '日期格式错误',
+        'exists'=>'不存在:attribute',
+        'required' => '缺少 :attribute 参数.',
+        'numberic' => ':attribute 类型错误，只接受数字',
+        'string' => ':attribute 类型错误',
+        'in' => ':attribute 赋值错误',
+        'boolean' => ':attribute 类型错误，只接受0或1'
+    ];
+
 	public function getHeatsourcesByGroupName( $group_name )
 	{
 		switch( $group_name ) {
@@ -65,6 +115,7 @@ class HeatsourceService
 
 	public function filterByHeatsourceId($heatsource_ids, $from, $to )
 	{
+		$heatsource_ids=[1,3,4,5,6,20,21,22];
 		return HeatsourceAccumulate::whereIn('heatsource_id', $heatsource_ids)
 			->where('date', '>=', $from)
             ->where('date', '<=', $to)->get();
@@ -85,6 +136,7 @@ class HeatsourceService
 
 	public function getAccumulateData($heatsource_ids, $from, $to, $parameters)
 	{
+
 		$heatsources = $this->filterByHeatsourceId(
             $heatsource_ids,$from, $to)
             ->map(function($item, $key) {
@@ -95,27 +147,22 @@ class HeatsourceService
             })->groupBy("date");
 
         $processed = [];
-
         foreach ($heatsources as $key=> $heatsource) {
         	$processed_item = [];
-            $processed_item["data"]=[];
         	foreach ($parameters as $parameter) {
         		if($this->isAggregate($parameter))
         		{
     				$processed_item[$parameter] = $heatsource->max($parameter);
         		}
         	}
-        	$processed_item["data"]= $heatsource->map( function($item, $key) use($parameters) {
+        	$results = $heatsource->map( function($item, $key) use($parameters) {
 				$result = [];
 				foreach ($parameters as $parameter) {
-	        		if(!$this->isAggregate($parameter))
-	        		{
-	        			$result[$parameter] = $item[$parameter];
-	        		}
+	        		$result[$parameter] = $item[$parameter];
 	        	}
 				return $result;
 			});
-            array_push($processed, $processed_item);
+            array_push($processed, $results->toArray());
         }
 
         return $processed;

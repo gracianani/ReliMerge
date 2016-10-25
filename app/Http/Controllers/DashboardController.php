@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Entities\Block;
-
 use ReliDashboard;
+use App\Jobs\UpdateDashboardBlock;
 
 class DashboardController extends Controller
 {
@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $blocks = ReliDashboard::getBlocks('station_dashboard' );
 
         $multiplied = $blocks->map(function ($item, $key) use($station_id) {
-            $item->station_id = $station_id;
+            $item->modelable_id = $station_id;
             return $item->block_array;
         });
 
@@ -39,6 +39,20 @@ class DashboardController extends Controller
                 "blocks" => $multiplied
             )
         );
+    }
+
+    public function fireQueue()
+    {
+        $dashboardBlocks = ReliDashboard::getBlocks('dashboard');
+
+        dispatch(new UpdateDashboardBlock($dashboardBlocks->first()));
+    
+        return view('heatsource.fire');
+    }
+
+    public function pusher()
+    {
+        return view('heatsource.fire');
     }
 }
 

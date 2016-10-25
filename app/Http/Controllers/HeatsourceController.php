@@ -12,15 +12,6 @@ use Validator;
 
 class HeatsourceController extends Controller
 {
-    private $validate_rules = [
-                'id' => 'required|numeric|exists:HeatSources,ItemID',
-                'name' => 'string',
-                'address' => 'string',
-                'year_of_built' => 'numeric',
-                'area' => 'numeric',
-                'admin' => 'string'
-            ];
-
     public function showBasic()
     {
         $block = ReliDashboard::getBlock('heatsource');
@@ -34,7 +25,10 @@ class HeatsourceController extends Controller
         $data = json_decode( $request->input('data'), true);
         $data = array_merge($data, ["id"=>$id]);
         $validator = Validator::make(
-            $data , $this->validate_rules);
+            $data , 
+            ReliHeatsources::getValidationRules(), 
+            ReliHeatsources::getValidationMessages()
+        );
 
         if ($validator->fails()) {
             return response()->json(
@@ -48,6 +42,7 @@ class HeatsourceController extends Controller
         return response()->json(
             array( 'error' => !$result, 
             "heatsource" => $heatsource->heat_source_array )
+
         );
     }
 
@@ -57,7 +52,7 @@ class HeatsourceController extends Controller
         foreach($data as $data_item)
         {
             $validator = Validator::make(
-                $data_item , $this->validate_rules);
+                $data_item , $this->validate_rules, $this->messages);
             if ($validator->fails()) {
                 return response()->json(
                     array( 'error' => true,
@@ -97,12 +92,12 @@ class HeatsourceController extends Controller
 
     public function showStatByHeatSource(Request $request)
     {
+
         $block = ReliDashboard::getBlock('heatsource_stat');
 
         $heatsource_ids = json_decode( $request->input('heatsource_ids'), true);
         $from = $request->input('from');
         $to = $request->input('to');
-
 
         return response()->json(
             $block->getHeatsourceStatPerDay(

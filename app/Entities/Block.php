@@ -14,6 +14,13 @@ class Block extends Model
     	return $this->morphTo();
     }
 
+    public function setModelableIdAttribute($value)
+    {
+        $blockable = $this->blockable;
+        if(!is_null($blockable))
+        $blockable->modelable_id = $value;
+    }
+
     public function blockUnits()
     {
         return $this->belongsToMany('App\Entities\BlockUnit');

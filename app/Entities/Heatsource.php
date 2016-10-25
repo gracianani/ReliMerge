@@ -11,8 +11,8 @@ class Heatsource extends Model
 
     protected $primaryKey = 'ItemID';
 
-    protected $fillable = [ "heat_source_num", 'address','year_of_built', 
-        "area", "name", "admin", "phone", "type", "is_gas", "inner_or_outer", "district", 
+    protected $fillable = [ "heat_source_num", 'address','year_of_built', "district",
+        "area", "name", "admin", "phone", "type", "is_gas", "inner_or_outer", 
         "is_whole", "heat_capacity", "max_hourly_heat_capacity", "max_daily_heat_capacity",
         "max_day_hourly_heat_capacity", "water_cycle", "max_water_cycle","additional_water",
         "max_inst_additional_water", "max_daily_additional_water", "max_monthly_additional_water",
@@ -36,10 +36,25 @@ class Heatsource extends Model
         $this->{'热源名称'} = $value;
     }
 
-    // public function getInnerOrOuterAttribute()
-    // {
-    //     if($this->{"inner_or_outer"} == true)
-    // }
+    public function setDistrictAttribute($value)
+    {
+        $this->{'东西部'} = $value;
+    }
+    
+    public function setInnerOrOuterAttribute($value)
+    {
+        $this->{"内外部"} = $value;
+    }
+    
+    public function setTypeAttribute($value)
+    {
+        $this->{'机组类型'} = $value;
+    }
+
+    public function setIsWholeAttribute($value)
+    {
+        $this->{'是否并网供热'} = $value;
+    }
 
     public function getHeatSourceArrayAttribute()
     {

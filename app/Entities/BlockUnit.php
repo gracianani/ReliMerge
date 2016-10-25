@@ -69,7 +69,7 @@ class BlockUnit extends Model
     		"filter" => $this->filter,
             "sub_headers"=> $this->children->map( function($item, $key) {
                 return $item->table_header_block_unit_array;
-            })
+            })->sortBy('sequence')->values()
     	);
     }
 

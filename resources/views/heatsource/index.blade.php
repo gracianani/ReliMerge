@@ -11,6 +11,5 @@
 <!-- make it simple to generate a token right in the UI to play with -->
 <passport-personal-access-tokens></passport-personal-access-tokens>
 
-{{ $heatsource->heatsource_name }}
 
 @endsection

@@ -41,25 +41,14 @@ class TotalNetService
         $processed = [];
 
         foreach ($totalNets as $key=> $totalNet) {
-        	$processed_item = [];
-            $processed_item["data"]=[];
-        	foreach ($parameters as $parameter) {
-        		if($this->isAggregate($parameter))
-        		{
-    				$processed_item[$parameter] = $totalNet->max($parameter);
-        		}
-        	}
-        	$processed_item["data"]= $totalNet->map( function($item, $key) use($parameters) {
+        	$results = $totalNet->map( function($item, $key) use($parameters) {
 				$result = [];
 				foreach ($parameters as $parameter) {
-	        		if(!$this->isAggregate($parameter))
-	        		{
-	        			$result[$parameter] = $item[$parameter];
-	        		}
+	        		$result[$parameter] = $item[$parameter];
 	        	}
 				return $result;
 			});
-            array_push($processed, $processed_item);
+            array_push($processed, $results->values()->toArray());
         }
 
         return $processed;

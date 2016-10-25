@@ -129,7 +129,7 @@ return array(
 				'App\Entities\StationDashboardBlock',
 				'App\Entities\DashboardValueBlock',
 				'App\Entities\DashboardSeriesBlock',
-				'App\Entities\DashboardTableBlock'
+				'App\Entities\DashboardCompareBlock'
 			)
 		),
 		'module' => array(

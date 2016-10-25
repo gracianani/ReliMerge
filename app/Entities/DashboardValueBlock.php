@@ -37,6 +37,17 @@ class DashboardValueBlock extends Model
         return !is_null($this->group_by);
     }
 
+    public function getDataItemsAttribute()
+    {
+        if($this->is_collection)
+        {
+            return $this->collection;
+        }
+        else {
+            return array($this->modelable);
+        }
+    }
+
     public function getBlockArrayAttribute()
     {
         $header = $this->block->headerBlockUnits->map( function($item, $key) {
@@ -47,40 +58,37 @@ class DashboardValueBlock extends Model
 
         $properties = $this->block->properties;
 
-        if($this->is_collection)
+        
+        $values = [];
+        foreach ($this->data_items as $key => $value) 
         {
-            $values = [];
-            foreach ($this->collection as $key => $value) 
+            $content = [];
+            if(!is_null($value))
             {
-                $content["name"] = $value->title;
-                $content = array_merge($content , $this->block->getBlockValueByProperty(
-                    $value, $properties
-                ));
-                array_push( $values, $content );
+                $content["name"] = $value->name;
             }
-            if($this->is_group_by)
+            $content = array_merge($content , $this->block->getBlockValueByProperty(
+                $value, $properties
+            ));
+            array_push( $values, $content );
+        }
+        if($this->is_group_by)
+        {
+            $values = collect($values)->groupBy(function($item, $key)
             {
-                $values = collect($values)->groupBy(function($item, $key)
-                {
-                    return [$key=>$item[$this->group_by]];
-                });
+                return [$key=>$item[$this->group_by]];
+            });
 
-                $values->transform(function ($item, $key) {
-                    $new_value["data"] = $item;
-                    return $new_value;
-                });
+            $values->transform(function ($item, $key) {
+                $new_value["data"] = $item;
+                return $new_value;
+            });
 
-                $values = $values->flatten(1);
-            }
-            
-            $result["content"] = $values;
+            $values = $values->flatten(1);
         }
-        else {
-            $content = $this->block->getBlockValueByProperty(
-                $this->modelable, $properties
-            );
-            $result["content"] = $content;
-        }
+        
+        $result["content"] = $values;
+    
         return $result;
     }
 

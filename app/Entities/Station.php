@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Carbon\Carbon;
 
 class Station extends Model
 {
@@ -24,6 +25,33 @@ class Station extends Model
     public function stationRecents()
     {
         return $this->hasMany('App\Entities\StationRecent');
+    }
+
+    public function getRealtime($properties, $itemId, $from, $to, $function_name, $appends)
+    {
+        $query = sprintf("select %s from %s ( %d, '%s', '%s' )", 
+            implode(',', $properties), $function_name, $itemId, $from->toDateTimeString(), $to->toDateTimeString());
+
+        $array = DB::select($query);
+        $objects = [];
+        foreach ($array as $value) {
+            $object = json_decode(json_encode($value), FALSE);
+            $result = new \StdClass;
+
+            $result->timestamp = Carbon::createFromFormat('Y-m-d', $object->d1)
+                ->addHours($object->h1)->timestamp;
+            $result->{'heat_planned'} = 1;
+            $result->{'heat_actual'} = $object->{'gj'};
+            $result->{'heat_perdict'} = 1;
+            $result->{'name'} = $itemId;
+            foreach ($appends as $key=>$value) {
+                $result->{$key} = $value;
+            }
+
+            array_push($objects, $result);
+        }
+        
+        return $objects;
     }
 
     public function getStationArrayAttribute()

@@ -3,11 +3,11 @@ use App\Entities\DisplayValue;
 
 return array(
 
-	'title' => '表格模块设置',
+	'title' => '对比模块设置',
 
-	'single' => '表格模块',
+	'single' => '对比模块',
 
-	'model' => 'App\Entities\DashboardTableBlock',
+	'model' => 'App\Entities\DashboardCompareBlock',
 
 	/**
 	 * The display columns
@@ -44,9 +44,9 @@ return array(
 			'title' => '实例Type',
 			'type' => 'text'
 		),
-		'at' => array(
-			'title' => '日期',
-			'type' => 'date'
+		'format' => array(
+			'title' => '对比表头格式',
+			'type' => 'text'
 		)
 	),
 );

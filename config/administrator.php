@@ -70,7 +70,7 @@ return array(
 			'dashboard', 
 			'dashboardSeriesBlock',
 			'dashboardValueBlock',
-			'dashboardTableBlock',
+			'dashboardCompareBlock',
 			'blockunits',
 			'heatSourceBlock',
 			'stationBlock',

@@ -15,4 +15,9 @@ class ConstDefine extends Model
 	const EAST_NAME = '东部';
 	const WEST_NAME = '西部';
 	const TOTAL_NAME = '全网'; 
+
+
+	const CURRENT_CONTROL_MODE = 1; // '设置当前控制方式，手动或自动';
+	const CONTROL_MODE = 1; // '自动时，二次供温控制模式';
+
 }

@@ -7,6 +7,7 @@ use App\Services\HeatsourceService;
 use App\Services\TotalNetService;
 use App\Services\StationService;
 use App\Services\DashboardService;
+use App\Services\GeneralService;
 
 class ReliServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,10 @@ class ReliServiceProvider extends ServiceProvider
 
         $this->app->bind('dashboardService', function ($app) {
             return new DashboardService();
+        });
+
+        $this->app->bind('generalService', function ($app) {
+            return new GeneralService();
         });
     }
 }

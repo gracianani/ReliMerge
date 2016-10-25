@@ -229,6 +229,7 @@ return [
         'ReliHeatsources' => App\Facades\HeatsourceFacade::class,
         'ReliTotalNet' => App\Facades\TotalNetFacade::class,
         'ReliStations' => App\Facades\StationFacade::class,
-        'ReliDashboard' => App\Facades\DashboardFacade::class
+        'ReliDashboard' => App\Facades\DashboardFacade::class,
+        'Reli' => App\Facades\GeneralFacade::class
     ],
 ];

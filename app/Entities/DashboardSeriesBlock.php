@@ -75,7 +75,7 @@ class DashboardSeriesBlock extends Model
     {
         if(! is_null($this->hourly_from_offset)) {
             $carbon_offset = CarbonInterval::createFromDateString ($this->hourly_from_offset);
-            return Carbon::create(2015, 12, 1)->copy()->add($carbon_offset);
+            return Carbon::create(2015, 12, 1, 0, 0, 0)->copy()->add($carbon_offset);
         }
         return Carbon::today();
     }
@@ -84,11 +84,22 @@ class DashboardSeriesBlock extends Model
     {
         if(! is_null($this->hourly_to_offset)) {
             $carbon_offset = CarbonInterval::createFromDateString ($this->hourly_to_offset);
-            return Carbon::today()->copy()->add($carbon_offset);
+            $to =  Carbon::create(2015, 12, 1, 0, 0, 0)->add($carbon_offset);
+            return $to;
         }
-        return Carbon::create(2015, 12, 2);
+        return Carbon::now();
     }
 
+    public function getDataItemsAttribute()
+    {
+        if($this->is_collection)
+        {
+            return $this->collection;
+        }
+        else {
+            return array($this->modelable);
+        }
+    }
     // public function getBlockArrayAttribute()
     // {
     //     return $this->block_b_array;
@@ -149,49 +160,42 @@ class DashboardSeriesBlock extends Model
 
         $properties = $this->block->properties;
         
-        if($this->is_collection)
+        $values = [];
+        foreach ($this->data_items as $key => $value) 
         {
-            $values = [];
-            foreach ($this->collection as $key => $value) 
-            {
-                $content["name"] = $value->title;
-                if($this->has_hourly_function)
-                {
-                    $content =  $value->getRealtime(
-                        ['*'], $value->ItemID, $this->hourly_from, $this->hourly_to, 
-                        $this->hourly_function_name, array('name'=>$value->title)
-                    );
-                }
-                else{
-                    $content = array_merge($content , $this->block->getBlockValueByProperty(
-                        $value, $properties
-                    ));
-                }
-                array_push( $values, $content );
-            }
-            if($this->is_group_by)
-            {
-                $values = collect($values)->groupBy(function($item, $key)
-                {
-                    return [$key=>$item[$this->group_by]];
-                });
 
-                $values->transform(function ($item, $key) {
-                    $new_value["data"] = $item;
-                    return $new_value;
-                });
-
-                $values = $values->flatten(1);
+            $content["name"] = $value->title;
+            if($this->has_hourly_function)
+            {
+                $content =  $value->getRealtime(
+                    ['*'], $value->ItemID, $this->hourly_from, $this->hourly_to, 
+                    $this->hourly_function_name, array('name'=>$value->title)
+                );
             }
-            
-            $result["content"] = $values;
+            else{
+                $content = array_merge($content , $this->block->getBlockValueByProperty(
+                    $value, $properties
+                ));
+            }
+            array_push( $values, $content );
         }
-        else {
-            $content = $this->block->getBlockValueByProperty(
-                $this->modelable, $properties
-            );
-            $result["content"] = $content;
+        if($this->is_group_by)
+        {
+            $values = collect($values)->groupBy(function($item, $key)
+            {
+                return [$key=>$item[$this->group_by]];
+            });
+
+            $values->transform(function ($item, $key) {
+                $new_value["data"] = $item;
+                return $new_value;
+            });
+
+            $values = $values->flatten(1);
         }
+        
+        $result["content"] = $values;
+     
         return $result;
     }
 

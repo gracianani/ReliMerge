@@ -89,7 +89,7 @@ class HeatSourceBlock extends Model
 
         $header = $this->block->headerBlockUnits->map( function($item, $key) {
             return $item->table_header_block_unit_array;
-        });
+        })->sortBy('sequence')->values();
         
         return array(
             "header" => $header,
@@ -111,7 +111,7 @@ class HeatSourceBlock extends Model
 
         $header = $this->block->headerBlockUnits->map( function($item, $key) {
             return $item->table_header_block_unit_array;
-        });
+        })->sortBy('sequence')->values();;
         
         return array(
             "header" => $header,
