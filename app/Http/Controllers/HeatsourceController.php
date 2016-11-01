@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-
 use ReliHeatsources;
 use Exception;
 use ReliDashboard;
@@ -52,7 +51,7 @@ class HeatsourceController extends Controller
         foreach($data as $data_item)
         {
             $validator = Validator::make(
-                $data_item , $this->validate_rules, $this->messages);
+                $data_item , ReliHeatsources::getValidationRules(), ReliHeatsources::getValidationMessages() );
             if ($validator->fails()) {
                 return response()->json(
                     array( 'error' => true,
@@ -86,19 +85,14 @@ class HeatsourceController extends Controller
         return response()->json(
             $block->getByParameter($id, $parameter)
         );
-
-        
     }
 
     public function showStatByHeatSource(Request $request)
     {
-
         $block = ReliDashboard::getBlock('heatsource_stat');
-
         $heatsource_ids = json_decode( $request->input('heatsource_ids'), true);
         $from = $request->input('from');
         $to = $request->input('to');
-
         return response()->json(
             $block->getHeatsourceStatPerDay(
                 $heatsource_ids,
@@ -107,5 +101,4 @@ class HeatsourceController extends Controller
             )
         );
     }
-   
 } 

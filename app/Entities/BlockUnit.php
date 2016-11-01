@@ -9,6 +9,16 @@ class BlockUnit extends Model
 {
     public $timestamps = false;
 
+    protected $casts = [
+        'is_sortable' => 'boolean',
+        'is_filterable' => 'boolean',
+        'is_editable' => 'boolean',
+        'is_visible' => 'boolean',
+        'is_hoverable' => 'boolean',
+        "filter_min" => 'float',
+        'filter_max' => 'float'
+    ];
+
 	public function blocks()
     {
         return $this->belongsToMany('App\Entities\Block');
@@ -54,6 +64,8 @@ class BlockUnit extends Model
     	
     }
 
+
+
     public function getTableHeaderBlockUnitArrayAttribute()
     {
     	return array(
@@ -82,6 +94,7 @@ class BlockUnit extends Model
             "property_name" => $this->property_name
         );
     }
+    
     public function getTableContentBlockUnitArrayAttribute()
     {
         return array(
@@ -89,6 +102,5 @@ class BlockUnit extends Model
             "unit" => $this->unit
         );
     }
-
     
 }

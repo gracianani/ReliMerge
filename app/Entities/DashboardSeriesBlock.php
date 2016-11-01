@@ -100,55 +100,6 @@ class DashboardSeriesBlock extends Model
             return array($this->modelable);
         }
     }
-    // public function getBlockArrayAttribute()
-    // {
-    //     return $this->block_b_array;
-    // 	$values = [];
-    //     foreach ($this->collection as $total_net_recent) 
-    //     {
-    //         $header = $this->block->getBlockValue($total_net_recent);
-    //         $content = $this->block->getBlockCollectionValue(
-    //             $total_net_recent->getTotalNetRecentHourly(4, $this->from, $this->to) 
-    //         );
-
-    //         array_push( $values, array(
-    //             'title' => $total_net_recent->title,
-    //             'header' => $header,
-    //             'content' => $content
-    //         ));
-    //     }
-    // 	return $values;
-    // }
-
-    // public function getBlockAArrayAttribute()
-    // {
-    //     $all_values=[];
-    //     $headers = $this->block->headerBlockUnits->map( function($item, $key) {
-    //         return $item->static_header_block_unit_array;
-    //     });
-
-    //     $from = Carbon::createFromDate(2015,12,1);
-    //     $to = Carbon::createFromDate(2015,12,8);
-    //     $groups = ["东部" => 1, "西部" => 2, "全网" => 3];
-    //     foreach ( $groups as $key => $value) {
-    //         $values = [];
-    //         foreach ($headers as $header) {
-    //             $content = ReliTotalNet::getAttributeData($value, $from, $to, [ "value"=>$header["property_name"],"timestamp"=>"timestamp" ]);
-    //             array_push( $values, array(
-    //                 'unit' => $header["unit"],
-    //                 'title' => $header["title"],
-    //                 'data' => $content
-    //             ));
-    //         }
-    //         array_push($all_values, array(
-    //             'title' => $key,
-    //             'header' => null,
-    //             "content" => $values
-    //         ));
-    //     }
-        
-    //     return $all_values;
-    // }
 
     public function getBlockArrayAttribute()
     {

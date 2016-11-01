@@ -12,10 +12,28 @@ class HeatSourceBlock extends Model
 
     public $table = 'heatsource_blocks';
 	
+    private $filter = '';
+
+    private $sort_by = '';
+
 	public function block()
 	{
 		return $this->belongsTo('App\Entities\Block');
 	}
+
+    public function getTableHeaderBlockUnitArrayAttribute()
+    {
+        $header = $this->block->getHeaderBlockUnitArray('table_header_block_unit_array');
+        
+        return $header;
+    }
+
+    public function getStaticHeaderBlockUnitArrayAttribute()
+    {
+        $header = $this->block->getHeaderBlockUnitArray('static_header_block_unit_array', 'sequence', $this->filter);
+        
+        return $header;
+    }
 
     public function getHeatsourceRecentsAttribute()
     {
@@ -38,9 +56,7 @@ class HeatSourceBlock extends Model
 		    return $item->heat_source_array;
 		});   
 
-    	$header = $this->block->headerBlockUnits->map( function($item, $key) {
-    		return $item->table_header_block_unit_array;
-    	})->sortBy('sequence')->values();
+    	$header = $this->table_header_block_unit_array;
 
     	return array(
     		"header" => $header,
@@ -55,19 +71,12 @@ class HeatSourceBlock extends Model
             return $item->block_array;
         });
 
-        $header = $this->block->headerBlockUnits->map( function($item, $key) {
-            return $item->table_header_block_unit_array;
-        })->sortBy('sequence')->values();
+        $header = $this->table_header_block_unit_array;
         
         return array(
             "header" => $header,
             "content" => $multiplied
         );
-    }
-
-    public function getHeatsourceTotalStat( $group_names, $from, $to)
-    {
-
     }
 
     public function getTotalNetStatPerDay( $district_ids, $from, $to)
@@ -87,9 +96,7 @@ class HeatSourceBlock extends Model
                 'heat_actual')
         );
 
-        $header = $this->block->headerBlockUnits->map( function($item, $key) {
-            return $item->table_header_block_unit_array;
-        })->sortBy('sequence')->values();
+        $header = $this->table_header_block_unit_array;
         
         return array(
             "header" => $header,
@@ -109,9 +116,7 @@ class HeatSourceBlock extends Model
                     "heat_daily_gj")
             );
 
-        $header = $this->block->headerBlockUnits->map( function($item, $key) {
-            return $item->table_header_block_unit_array;
-        })->sortBy('sequence')->values();;
+        $header = $this->table_header_block_unit_array;
         
         return array(
             "header" => $header,
@@ -122,13 +127,8 @@ class HeatSourceBlock extends Model
     public function getByParameter($id, $parameter)
     {
         $data = ReliHeatsources::fetchRealtimeByParameter($id, $parameter);
-        
-        $header = $this->block->headerBlockUnits
-            ->filter(function ($value, $key) use($parameter) {
-            return $value["property_name"] == $parameter;
-        })->map(function($item){
-            return $item->static_header_block_unit_array;
-        })->values();
+        $this->filter = $parameter;
+        $header = $this->static_header_block_unit_array;
 
         return 
             array(

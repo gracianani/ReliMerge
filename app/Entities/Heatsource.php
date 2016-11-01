@@ -7,7 +7,7 @@ use DB;
 
 class Heatsource extends Model
 {
-    protected $table = 'HeatSources';
+    protected $table = 'display.heatsources';
 
     protected $primaryKey = 'ItemID';
 
@@ -18,6 +18,12 @@ class Heatsource extends Model
         "max_inst_additional_water", "max_daily_additional_water", "max_monthly_additional_water",
         "daily_gas_usage", "hourly_gas_usage", "num_of_ovens", "oven_heat_capacity"
     ];
+
+    protected $cast = [
+        "area" => 'float',
+        "is_whole" => 'boolean',
+        "num_of_ovens" => 'float'
+     ];
 
     public $timestamps = false;
 
@@ -31,29 +37,9 @@ class Heatsource extends Model
     	return $this->hasMany('App\Entities\HeatSourceRecents');
     }
 
-    public function setNameAttribute($value)
+    public function getSublineNameAttribute()
     {
-        $this->{'热源名称'} = $value;
-    }
-
-    public function setDistrictAttribute($value)
-    {
-        $this->{'东西部'} = $value;
-    }
-    
-    public function setInnerOrOuterAttribute($value)
-    {
-        $this->{"内外部"} = $value;
-    }
-    
-    public function setTypeAttribute($value)
-    {
-        $this->{'机组类型'} = $value;
-    }
-
-    public function setIsWholeAttribute($value)
-    {
-        $this->{'是否并网供热'} = $value;
+        return $this->water_line + $this->gas_line;
     }
 
     public function getHeatSourceArrayAttribute()
@@ -86,7 +72,7 @@ class Heatsource extends Model
     		"max_monthly_additional_water" => $this->max_monthly_additional_water,
     		"daily_gas_usage" => $this->daily_gas_usage,
     		"hourly_gas_usage" => $this->hourly_gas_usage,
-    		"num_of_ovens" => $this->num_of_ovens,
+    		"num_of_ovens" => (int)$this->num_of_ovens,
     		"oven_heat_capacity" => $this->oven_heat_capacity
     	);
     }

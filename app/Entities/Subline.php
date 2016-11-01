@@ -4,9 +4,9 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StationRecent extends Model
+class Subline extends Model
 {
-	protected $table = 'Station2ndRecent';
+	protected $table = 'display.station2ndRecent';
 
 	protected $primaryKey = 'ItemID';
 
@@ -16,6 +16,26 @@ class StationRecent extends Model
 	{
 		return $this->belongsTo('App\Entities\Station', 'station_id');
 	}
+
+	public function TemperatureAutoControlLineOne()
+    {
+        return $this->hasOne('App\Entities\StationAutoControl')->wherePivot('GroupNo', 1);
+    }
+
+    public function TemperatureAutoControlLineTwo()
+    {
+        return $this->hasOne('App\Entities\StationAutoControl')->wherePivot('GroupNo', 2);
+    }
+
+    public function TimeAutoControlLineOne()
+    {
+        return $this->hasOne('App\Entities\StationAutoControl')->wherePivot('GroupNo', 1);
+    }
+
+    public function TimeAutoControlLineTwo()
+    {
+        return $this->hasOne('App\Entities\StationAutoControl')->wherePivot('GroupNo', 2);
+    }
 
 	public function getBlockArrayAttribute()
 	{
@@ -29,6 +49,7 @@ class StationRecent extends Model
 			'second_pressure_in' => $this->second_pressure_in,
 			'water_flow_inst' => $this->water_flow_inst,
 			'heat_inst' => $this->heat_inst,
+			'water_flow' => $this->water_flow,
 			'heat' => $this->heat,
 			'control_mode' => $this->control_mode
 		);

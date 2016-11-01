@@ -8,9 +8,13 @@ use Carbon\Carbon;
 
 class Station extends Model
 {
-    protected $table = 'Stations';
+    protected $table = 'display.stations';
 
     protected $primaryKey = 'ItemID';
+
+    private $hourly_function_name = 'display.stationrecents_hourly';
+
+    private $columns = [];
 
     public function company()
     {
@@ -22,11 +26,16 @@ class Station extends Model
     	return $this->hasMany('App\Entities\StationArea', '热力站ID');
     }
 
-    public function stationRecents()
+    public function sublines()
     {
-        return $this->hasMany('App\Entities\StationRecent');
+        return $this->hasMany('App\Entities\Subline');
     }
 
+    public function stationAutoControls()
+    {
+        return $this->hasMany('App\Entities\StationAutoControl');
+    }
+    
     public function getRealtime($properties, $itemId, $from, $to, $function_name, $appends)
     {
         $query = sprintf("select %s from %s ( %d, '%s', '%s' )", 
@@ -60,6 +69,14 @@ class Station extends Model
     	{
     		return $item->block_array;
     	});
+
+        $result = [];
+        foreach ($this->columns as $column) {
+            $result[$column] = $this->{$column};
+        }
+        
+        return $result;
+
     	return array(
     		'id' => $this->ItemID,
     		'station_num' => $this->station_num,
@@ -80,13 +97,13 @@ class Station extends Model
     		'revenual_type' => $this->revenual_type,
     		"area_a" => $this->area_a,
     		"area_b" => $this->area_b,
-    		'area' => $area
+    		'area_17' => $area
     	);
     }
 
     public function getStationRecentArrayAttribute($value='')
     {
-        $multiplied = $this->stationRecents->map(function ($item, $key) {
+        $multiplied = $this->sublines->map(function ($item, $key) {
             return $item->block_array;
         });
         return array(
@@ -107,5 +124,33 @@ class Station extends Model
         );
     }
 
+    public function getRealtimeParameters($select_parameters, $arguments)
+    {
+        $select_query =  implode(',', array_keys ( $select_parameters));
+        $argument_query = sprintf("%d, %s, %s, %s", $this->ItemID, 
+            $arguments["subline_num"], 
+            "'".$arguments["from"]."'", 
+            "'".$arguments["to"]."'");
+        $query  = $this->getRealtimeSecond($select_query, $argument_query, 
+            $select_parameters );
+        return $query;
+    }
 
+    public function getRealtimeSecond ($select_query,$argument_query, $select_parameters)
+    {
+        $query = sprintf("select %s from %s (%s)", 
+            $select_query, $this->hourly_function_name, $argument_query);
+        $array = DB::select(DB::raw($query));
+        $objects = [];
+        foreach ($array as $value) 
+        {
+            $object = json_decode(json_encode($value), FALSE);
+            foreach ($select_parameters as $key => $select_parameter) {
+                settype($object->{$key}, $select_parameter);    
+            }
+            $object->timestamp = Carbon::parse($object->{'time'})->timestamp;
+            array_push($objects, $object);
+        }
+        return $objects;
+    }
 }

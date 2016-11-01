@@ -30,7 +30,7 @@ class HeatsourceService
         "type" => 'in:燃煤,燃气,燃油', 
         "is_gas" => 'boolean', 
         "inner_or_outer" => 'in:内部,外部', 
-        "district" => 'in:东部,西部,全网', 
+        "district" => 'exists:display.districts,name', 
         "is_whole" => 'boolean', 
         "heat_capacity" => 'numeric', 
         "max_hourly_heat_capacity" => 'numeric', 

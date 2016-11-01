@@ -7,8 +7,7 @@ use App\ConstDefine;
 
 class Weather4 extends Model
 {
-    public $table = 'Weather_4';
+    public $table = 'display.Weather4';
 
     protected $primaryKey = 'ItemID';
-
 }

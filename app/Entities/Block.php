@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
@@ -196,4 +197,70 @@ class Block extends Model
         $properties = array_column($this->headerBlockUnits->toArray(), 'property_name');
         return $properties;
     }
+
+    public function getTableHeaderBlockUnitArrayAttribute()
+    {
+        $header = $this->headerBlockUnits->map( function($item, $key) {
+            return $item->table_header_block_unit_array;
+        })->sortBy('sequence')->values();
+
+        return $header;
+    }
+
+    public function getStaticHeaderBlockUnitArrayAttribute()
+    {
+        $header = $this->headerBlockUnits->map( function($item, $key) {
+            return $item->static_header_block_unit_array;
+        })->sortBy('sequence')->values();
+
+        return $header;
+    }
+
+    public function getHeaderBlockUnitArray( $header_display_type, $sortBy = 'sequence', $filter='')
+    {
+        $header = $this->headerBlockUnits->map( function($item, $key) use($header_display_type) {
+            return $item->{$header_display_type};
+        })->sortBy($sortBy)->values();
+        if($filter !== '')
+        {
+            $header = $header->filter(function ($value, $key) use($filter) {
+                return $value["property_name"] == $filter;
+            });
+        }
+        return $header;
+    }
+
+
+    public function applyCustomSettings($header_display_type, $sort_by = 'sequence', $filter='', $user=null)
+    {
+        if( $user === null) {
+            $user = User::find(1);
+        }
+
+        $current_header = $this->getHeaderBlockUnitArray($header_display_type);
+        
+        if(!$user->settings->contains('module_name', $this->module))
+        {
+            return $current_header;
+        }
+        $user_setting = $user->settings->first( function($value, $key) {
+            return $value->module_name ==  $this->module;
+        });
+
+        $setting_value = collect( json_decode($user_setting->setting_value, true) );
+        $current_header->transform(
+            function ($item, $key) use($setting_value) {
+            if($setting_value->contains("property_name", $item["property_name"]))
+            {
+                $property_name = $item["property_name"];
+                $the_setting = $setting_value->first( function($value, $key) use( $property_name ) {
+                    return $value["property_name"] ==  $property_name;
+                });
+
+                $item["is_visible"] = $the_setting["is_visible"];
+            }
+            return $item;
+        });
+        return $current_header;
+    } 
 }

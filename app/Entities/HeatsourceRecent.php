@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class HeatsourceRecent extends Model
 {
-    protected $table = 'HeatSourceRecent';
+    protected $table = 'display.HeatSourceRecents';
 
     protected $primaryKey = 'ItemID';
 

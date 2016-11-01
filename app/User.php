@@ -11,21 +11,17 @@ class User extends Authenticatable
     use HasApiTokens, Notifiable;
 
     protected $primaryKey = 'userId';
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
     protected $fillable = [
         'name', 'email', 'password',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function settings()
+    {
+        return $this->hasMany('App\Entities\UserSetting', 'user_id');
+    }
 }
