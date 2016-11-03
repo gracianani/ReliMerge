@@ -34,7 +34,7 @@ Route::get('/refresh', function( Request $request) {
 
 });
 
-Route::post('/blocks', 'DashboardController@show');
+Route::post('/blocks', 'DashboardController@show')->middleware('auth:api');
 
 Route::post('/heatsource', 'HeatSourceController@showBasic')->middleware('\App\Http\Middleware\Cors');
 
@@ -62,4 +62,6 @@ Route::post('/station/{station_id}/subline/{subline_id}/hourly/{parameter}', 'St
 
 Route::post('/stationfilter', 'StationController@filter')->middleware('\App\Http\Middleware\Cors');
 
-Route::post('/settings/blocks/{block_name}/headers/update' , 'HomeController@saveSettings')->middleware('\App\Http\Middleware\Cors')->middleware('auth:api');
+Route::post('/settings/blocks/{block_name}/headers/update' , 'HomeController@saveSettings')
+	->middleware('\App\Http\Middleware\Cors')->middleware('auth:api');
+

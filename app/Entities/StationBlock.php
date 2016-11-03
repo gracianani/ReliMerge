@@ -51,38 +51,19 @@ class StationBlock extends Model
 	public function getBlockArrayAttribute()
     {
         $header = $this->block->applyCustomSettings('table_header_block_unit_array');
-        $properties = array_column($header->toArray(), "property_name" );
-    	$multiplied = $this->stations->map(function ($item, $key) use ($properties) {
-            $item->column = $properties;
-		    return $item->station_array;
+        $properties = $this->block->applyCustomSettings('property');
+        $multiplied = $this->stations->map(function ($item, $key) use ($properties) {
+            $item->columns = $properties;
+		    return $item->item_array;
 		});
 
         $paginator = new ReliPaginator($multiplied, sizeof( $multiplied ), $this->per_page, $this->current_page);
-
     	
     	return array(
             "paginator" => $paginator->toPagingArray(),
     		"header" => $this->table_header_block_unit_array,
     		"content" => $paginator->getData()
     	);
-    }
-
-    public function getStationRecentBlockArrayAttribute()
-    {
-        $header = $this->block->applyCustomSettings('table_header_block_unit_array');
-        $properties = array_column($header->toArray(), "property_name" );
-        $multiplied = $this->stations->map(function ($item, $key) use ($properties) {
-            $item->column = $properties;
-            return $item->station_recent_array;
-        });
-
-        $paginator = new ReliPaginator($multiplied, sizeof( $multiplied ), $this->per_page, $this->current_page);
-
-        return array(
-            "paginator" => $paginator->toPagingArray(),
-            "header" => $header,
-            "content" => $paginator->getData()
-        );
     }
 
     public function getStationRecentByParametersBlockArrayAttribute()

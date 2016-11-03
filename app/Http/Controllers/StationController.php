@@ -30,7 +30,7 @@ class StationController extends Controller
         $block->current_page = $request->input('current_page', -1);
         $block->per_page = $request->input('per_page', -1);
         return response()->json(
-            $block->station_recent_block_array
+            $block->block_array
         );
     }
 

@@ -58,7 +58,6 @@ class DashboardValueBlock extends Model
 
         $properties = $this->block->properties;
 
-        
         $values = [];
         foreach ($this->data_items as $key => $value) 
         {

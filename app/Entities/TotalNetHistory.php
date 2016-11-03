@@ -10,17 +10,29 @@ class TotalNetHistory extends Model
 {
     public $table = 'display.TotalNetHistory';
 
+    protected $casts = [
+        "heat_index_ref" => 'float',
+        "heat_index_actual" => 'float', 
+        'heat_index_planned' => 'float',
+        'heat_index_calculate' => 'float',
+        'heat_perdict' => 'float',
+        "area_actual" => 'float',
+        'area_planned' => 'float',
+        "heat_planned_yesterday" => 'float',
+        "heat_actual_yesterday" => 'float',
+        "heat_calculate_yesterday" => 'float',
+        'heat_index_planned_yesterday' => 'float',
+        'heat_index_calculate_yesterday' => 'float',
+        'heat_index_actual_yesterday' => 'float',
+        'total_area_in_use_actual' => 'float',
+        'total_area_in_use_planned' => 'float',
+        'heat_planned' => 'float',
+        'heat_actual' => 'float'
+    ];
+
     public function getDistrictNameAttribute()
     {
-    	switch ($this->ItemID)
-    	{
-    		case ConstDefine::EAST:
-    			return ConstDefine::EAST_NAME;
-    		case ConstDefine::WEST:
-    			return ConstDefine::WEST_NAME;
-    		case ConstDefine::TOTAL:
-    			return ConstDefine::TOTAL_NAME;
-    	}
+        return ConstDefine::getDistrictName($this->ItemID);
     }
 
     public function temperature()
@@ -74,6 +86,7 @@ class TotalNetHistory extends Model
             'heat_ref' => $this->heat_ref,
             'temperature_perdict' => $this->temperature_perdict,
             'temperature_actual' =>  $this->temperature_actual,
+            'timestamp' => $this->timestamp
         );
     }
    

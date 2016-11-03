@@ -15,6 +15,26 @@ class Block extends Model
     	return $this->morphTo();
     }
 
+    public function role()
+    {
+        return $this->belongsTo('App\Entities\Role');
+    }
+
+    public function direction()
+    {
+        return $this->belongsTo('App\Entities\Direction',  'display_direction_id');
+    }
+
+    public function stack()
+    {
+        return $this->belongsTo('App\Entities\Stack', 'display_dropdown_id');
+    }
+
+    public function graph()
+    {
+        return $this->belongsTo('App\Entities\Graph', 'display_graph_id');
+    }
+
     public function setModelableIdAttribute($value)
     {
         $blockable = $this->blockable;

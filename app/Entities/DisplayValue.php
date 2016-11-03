@@ -1,7 +1,6 @@
-<?php
+<?php 
 
 namespace App\Entities;
-
 
 class DisplayValue
 {
@@ -20,3 +19,4 @@ class DisplayValue
 	const BUBBLE    			= 7;
 	const TABLE 				= 8;
 }
+

@@ -95,6 +95,16 @@ class BlockUnit extends Model
         );
     }
     
+    public function getPropertyAttribute()
+    {
+        return array(
+            "property_name" => $this->property_name,
+            "sub_headers" => $this->children->map( function($item, $key) {
+                return $item->property;
+            })->sortBy('sequence')->values()
+        );
+    }
+
     public function getTableContentBlockUnitArrayAttribute()
     {
         return array(

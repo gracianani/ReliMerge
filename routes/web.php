@@ -26,8 +26,8 @@ Route::get('profile', function () {
     // Only authenticated users may enter...
 })->middleware('auth.basic');
 
-Route::get('pd/{password}', function($password){
-	$user = User::find(1);
+Route::get('usr/{user_id}/pd/{password}', function($user_id, $password){
+	$user = User::find($user_id);
 	$user->forceFill([
             'password' => bcrypt($password),
             'remember_token' => Str::random(60),

@@ -1,6 +1,7 @@
 <?php
 
 use App\Entities\DisplayValue;
+use App\ConstDefine;
 
 return array(
 
@@ -15,6 +16,13 @@ return array(
 	 */
 	'columns' => array(
 		'id',
+		'role_id' => array(
+			'title' => '角色',
+			'output' => function($value)
+			{
+				return ConstDefine::getRoleName($value);
+			}
+		),
 		'display_direction_id' => array(
 			'title' => '方向',
 			'output' => function($value){
@@ -71,6 +79,12 @@ return array(
 	 * The editable fields
 	 */
 	'edit_fields' => array(
+		'role' => array(
+			'title' =>'角色',
+			'type' => 'relationship',
+			'name_field' => 'name',
+			'value_field' => 'id'
+		),
 		'size' => array(
 			'title' => '大小',
 			'type' => 'enum',
@@ -86,35 +100,23 @@ return array(
 			'title' => '标题',
 			'type' => 'text'
 		),
-		'display_direction_id' => array(
+		'direction' => array(
 			'title' => '方向',
-			'type' => 'enum',
-			'options' => array(
-				'1',
-				'2'
-			)
+			'type' => 'relationship',
+			'name_field' => 'name',
+			'value_field' => 'id'
 		),
-		'display_dropdown_id' => array(
+		'stack' => array(
 			'title' => '叠加方式',
-			'type' => 'enum',
-			'options' => array(
-				'1',
-				'2'
-			)
+			'type' => 'relationship',
+			'name_field' => 'name',
+			'value_field' => 'id'
 		),
-		'display_graph_id' => array(
+		'graph' => array(
 			'title' => '展示方式',
-			'type' => 'enum',
-			'options' => array(
-				'1',
-				'2',
-				'3',
-				'4',
-				'5',
-				'6',
-				'7',
-				'8'
-			)
+			'type' => 'relationship',
+			'name_field' => 'name',
+			'value_field' => 'id'
 		),
 		'blockable_id' => array(
 			'title' => 'id',
@@ -129,7 +131,8 @@ return array(
 				'App\Entities\StationDashboardBlock',
 				'App\Entities\DashboardValueBlock',
 				'App\Entities\DashboardSeriesBlock',
-				'App\Entities\DashboardCompareBlock'
+				'App\Entities\DashboardCompareBlock',
+				'App\Entities\Company'
 			)
 		),
 		'module' => array(

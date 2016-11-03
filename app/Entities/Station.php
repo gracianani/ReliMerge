@@ -16,6 +16,33 @@ class Station extends Model
 
     private $columns = [];
 
+    protected $casts = [
+        'area_a'=>'float',
+        'area_b'=>'float',
+        'is_important' => 'bool',
+        'is_whole' => 'bool',
+        'is_water' => 'bool',
+        'first_temperature_out' =>'float',
+        'first_temperature_in' => 'float',
+        'first_pressure_out' => 'float',
+        'first_pressure_in' => 'float',
+        'total_water_flow_inst' =>'float',
+        'total_heat_inst' => 'float',
+        'total_water_flow' => 'float',
+        'total_heat' => 'float',
+        'heat_index_ref' => 'float'
+    ];
+
+    public function getIdAttribute()
+    {
+        return $this->ItemID;
+    }
+
+    public function setColumnsAttribute($value)
+    {
+        $this->columns = $value;
+    }
+
     public function company()
     {
     	return $this->belongsTo('App\Entities\Company');
@@ -63,19 +90,34 @@ class Station extends Model
         return $objects;
     }
 
-    public function getStationArrayAttribute()
+    public function getItemArrayAttribute()
     {
-    	$area = $this->stationAreas->map(function($item, $key)
-    	{
-    		return $item->block_array;
-    	});
-
         $result = [];
         foreach ($this->columns as $column) {
-            $result[$column] = $this->{$column};
+            if( sizeof( $column["sub_headers"]) > 0){
+                $result[$column['property_name']] = $this->{$column["property_name"]}
+                    ->map(
+                    function($column_item, $column_key) use($column)
+                    {
+                        $column_item->columns = $column["sub_headers"];
+                        return $column_item->item_array;
+                    }
+                );
+            }
+            else {
+                $result[$column["property_name"]] = $this->{$column["property_name"]};
+            }
         }
-        
         return $result;
+    }
+
+    public function getStationArrayAttribute()
+    {
+
+        $area = $this->stationAreas->map(function($item, $key)
+        {
+            return $item->block_array;
+        });
 
     	return array(
     		'id' => $this->ItemID,

@@ -7,9 +7,9 @@ use App\ConstDefine;
 use DB;
 use Carbon\Carbon;
 
-class TotalNetRecent extends Model
+class Company extends Model
 {
-    public $table = 'display.TotalNetRecent';
+    public $table = 'display.companies';
 
     protected $primaryKey = 'ItemID';
 

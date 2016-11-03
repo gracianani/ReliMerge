@@ -10,11 +10,14 @@ use App\Jobs\UpdateDashboardBlock;
 
 class DashboardController extends Controller
 {
-    public function show()
+    public function show( Request $request )
     {
-    	$blocks = ReliDashboard::getBlocks('dashboard');
+        $user = $request->user();
+
+    	$blocks = ReliDashboard::getBlocks('dashboard', $user);
 
     	$multiplied = $blocks->map(function ($item, $key) {
+
 		    return $item->block_array;
 		});
 

@@ -26,16 +26,59 @@ class DashboardService
         'boolean' => ':attribute 类型错误，只接受0或1'
     ];
 
-	public function getBlock( $block_name )
+    public function applyCustomSettings($blocks, $module_name, $user=null)
+    {
+        if(!$user->settings->contains('module_name', $module_name))
+        {
+            return $blocks;
+        }
+        $user_setting = $user->settings->first( function($value, $key) use($module_name) {
+            return $value->module_name ==  $module_name;
+        });
+
+        $setting_value = collect( json_decode($user_setting->setting_value, true) );
+        $blocks->transform(
+            function ($item, $key) use($setting_value) {
+            if($setting_value->contains("id", $item["id"]))
+            {
+                $id = $item["id"];
+                $the_setting = $setting_value->first( function($value, $key) use( $id ) {
+                    return $value["id"] ==  $id;
+                });
+                $item["size"] = $the_setting["size"];
+                $item["sequence"] = $the_setting["sequence"];
+                $item["is_visible"] = $the_setting["is_visible"];
+            }
+            else {
+            	$item["is_visible"] = false;
+            }
+            return $item;
+        });
+        return $blocks->sortBy('sequence')->where('is_visible', true)->values();
+    } 
+
+	public function getBlock( $block_name)
 	{
 		$block = Block::where('module', $block_name)->first();
         $blockable = $block->blockable;
         return $blockable;
 	}
 
-	public function getBlocks( $block_name )
+
+	public function getBlocks( $block_name , $user= null)
 	{
-		$blocks = Block::where('module', $block_name)->orderBy('sequence')->get();
+		if( $user != null)
+		{
+			$role_ids = $user->role_ids;
+			$blocks = Block::where('module', $block_name)->
+				whereIn('role_id', $role_ids)->
+				orderBy('sequence')->get();
+			$blocks = $this->applyCustomSettings($blocks, $block_name, $user);
+		}
+		else 
+		{
+			$blocks = Block::where('module', $block_name)->orderBy('sequence')->get();
+		}
 		return $blocks;
 	}
 
