@@ -1,7 +1,7 @@
 <?php namespace App\Services;
 
-use App\Entities\HeatSource;
-use App\Entities\HeatSourceRecent;
+use App\Entities\Heatsource;
+use App\Entities\HeatsourceRecent;
 use App\Entities\HeatsourceAccumulate;
 use App\Entities\Block;
 use Carbon\Carbon;
